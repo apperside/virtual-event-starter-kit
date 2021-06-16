@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Job, Sponsor, Stage, Speaker, Event } from '@lib/types';
+import { Job, Sponsor, Stage, Speaker, Event, Artist } from '@lib/types';
 
 import * as strapiApi from './cms-providers/strapi';
 import * as agilityApi from './cms-providers/agility';
@@ -79,4 +79,12 @@ export async function getAllEvents(): Promise<Event[]> {
 
 export async function getEventDetails(id: number): Promise<Event> {
   return seetingApi.getEventDetails(id);
+}
+
+export async function getAllArtists(): Promise<Artist[]> {
+  return seetingApi.getArtists();
+}
+
+export async function getArtistInfo(id: number): Promise<Artist> {
+  return seetingApi.getArtistInfo(id);
 }

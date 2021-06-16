@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Job, Sponsor, Stage, Speaker, Event } from '@lib/types';
+import { Job, Sponsor, Stage, Speaker, Event, Artist } from '@lib/types';
 
 
 export async function getAllSpeakers(): Promise<Speaker[]> {
@@ -57,5 +57,31 @@ export async function getEventDetails(id: number): Promise<Event> {
   const data = await res.json();
   console.log("events are", data)
   return Promise.resolve(data.data.event as Event)
+
+}
+
+export async function getArtists(): Promise<Artist[]> {
+  const res = await fetch(`https://api.seetingapp.com/api/artists/all`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  });
+
+  const data = await res.json();
+  return Promise.resolve(data.items as Artist[])
+
+}
+
+export async function getArtistInfo(id: number): Promise<Artist> {
+  const res = await fetch(`https://api.seetingapp.com/api/artists/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  });
+
+  const data = await res.json();
+  return Promise.resolve(data.artist as Artist)
 
 }

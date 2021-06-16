@@ -120,7 +120,7 @@ export default function SponsorSection({ event }: Props) {
               type="button"
               className={styles.button}
             >
-              CALL TO ACTION
+              ACQUISTA
             </button>
             <a
               // href={sponsor.discord}
