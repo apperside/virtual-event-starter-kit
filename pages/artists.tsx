@@ -45,7 +45,7 @@ export default function Artists({ artists }: Props) {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const artists = await getAllArtists();
+  const artists: any[] = [];//await getAllArtists();
 
   return {
     props: {
