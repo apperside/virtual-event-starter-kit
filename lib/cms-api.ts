@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Job, Sponsor, Stage, Speaker } from '@lib/types';
+import { Job, Sponsor, Stage, Speaker, Event } from '@lib/types';
 
 import * as strapiApi from './cms-providers/strapi';
 import * as agilityApi from './cms-providers/agility';
@@ -21,12 +21,14 @@ import * as datoCmsApi from './cms-providers/dato';
 import * as contentfulApi from './cms-providers/contentful';
 import * as prismicApi from './cms-providers/prismic';
 import * as storyblokApi from './cms-providers/storyblok';
+import * as seetingApi from './cms-providers/seetingApi';
 
 let cmsApi: {
   getAllSpeakers: () => Promise<Speaker[]>;
   getAllStages: () => Promise<Stage[]>;
   getAllSponsors: () => Promise<Sponsor[]>;
   getAllJobs: () => Promise<Job[]>;
+  getAllEvents: () => Promise<Event[]>
 };
 
 if (process.env.DATOCMS_READ_ONLY_API_TOKEN) {
@@ -47,10 +49,11 @@ if (process.env.DATOCMS_READ_ONLY_API_TOKEN) {
   cmsApi = strapiApi;
 } else {
   cmsApi = {
-    getAllSpeakers: async () => [],
-    getAllStages: async () => [],
-    getAllSponsors: async () => [],
-    getAllJobs: async () => []
+    getAllSpeakers: async () => Promise.resolve([]),
+    getAllStages: async () => Promise.resolve([]),
+    getAllSponsors: async () => Promise.resolve([]),
+    getAllJobs: async () => Promise.resolve([]),
+    getAllEvents: async () => Promise.resolve([])
   };
 }
 
@@ -68,4 +71,12 @@ export async function getAllSponsors(): Promise<Sponsor[]> {
 
 export async function getAllJobs(): Promise<Job[]> {
   return cmsApi.getAllJobs();
+}
+
+export async function getAllEvents(): Promise<Event[]> {
+  return seetingApi.getAllEvents();
+}
+
+export async function getEventDetails(id: number): Promise<Event> {
+  return seetingApi.getEventDetails(id);
 }

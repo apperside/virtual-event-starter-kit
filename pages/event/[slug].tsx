@@ -17,27 +17,27 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
 
 import Page from '@components/page';
-import SponsorSection from '@components/sponsor-section';
+import EventSection from '@components/event-section';
 import Layout from '@components/layout';
 
-import { getAllSponsors, getAllEvents } from '@lib/cms-api';
-import { Sponsor } from '@lib/types';
+import { getAllSponsors, getAllEvents, getEventDetails } from '@lib/cms-api';
+import { Sponsor, Event } from '@lib/types';
 import { META_DESCRIPTION } from '@lib/constants';
 
 type Props = {
-  sponsor: Sponsor;
+  event: Event;
 };
 
-export default function SponsorPage({ sponsor }: Props) {
+export default function SponsorPage({ event }: Props) {
   const meta = {
     title: 'Demo - Virtual Event Starter Kit',
     description: META_DESCRIPTION
   };
 
   return (
-    <Page meta={meta}>
+    <Page meta={meta} useStripe >
       <Layout>
-        <SponsorSection sponsor={sponsor} />
+        <EventSection event={event} />
       </Layout>
     </Page>
   );
@@ -45,10 +45,9 @@ export default function SponsorPage({ sponsor }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug;
-  const sponsors = await getAllSponsors();
-  const sponsor = sponsors.find((s: Sponsor) => s.slug === slug) || null;
+  const event = await getEventDetails(slug as any);
 
-  if (!sponsor) {
+  if (!event) {
     return {
       notFound: true
     };
@@ -56,7 +55,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 
   return {
     props: {
-      sponsor
+      event
     },
     revalidate: 60
   };

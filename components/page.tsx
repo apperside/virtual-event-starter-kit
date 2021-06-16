@@ -31,9 +31,10 @@ type Props = {
   meta: Meta;
   children: React.ReactNode;
   fullViewport?: boolean;
+  useStripe?: boolean
 };
 
-export default function Page({ meta, children, fullViewport = false }: Props) {
+export default function Page({ meta, children, fullViewport = false, useStripe }: Props) {
   const router = useRouter();
   const image = meta.image || '/twitter-card.png';
   const title = meta.title || SITE_NAME;
@@ -44,6 +45,12 @@ export default function Page({ meta, children, fullViewport = false }: Props) {
     <div className={cn('page-container', { full: fullViewport })}>
       <Head>
         <title>{title}</title>
+        {useStripe &&
+          <>
+            <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+            <script src="https://js.stripe.com/v3/"></script>
+          </>
+        }
         <meta property="og:title" content={title} />
         <meta property="og:url" content={url} />
         <meta name="description" content={description} />

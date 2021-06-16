@@ -20,7 +20,7 @@
 const agilityContentSync = require('@agility/content-sync');
 const agilityFileSystem = require('@agility/content-sync/src/store-interface-filesystem');
 
-import { Job, Speaker, Sponsor, Stage } from '../types';
+import { Job, Speaker, Sponsor, Stage, Event } from '../types';
 
 const agilityConfig = {
   guid: process.env.AGILITY_GUID,
@@ -202,6 +202,10 @@ export async function getAllJobs(): Promise<Job[]> {
     .sort((a: any, b: any) => (a.rank > b.rank ? 1 : -1));
 }
 
+export function getAllEvents(): Promise<Event[]> {
+  return Promise.resolve([])
+}
+
 const getSyncClient = (context: any) => {
   let { isPreview, isDevelopmentMode } = context || {};
 
@@ -220,9 +224,8 @@ const getSyncClient = (context: any) => {
     return null;
   }
 
-  let cachePath = `node_modules/@agility/content-sync/cache/${agilityConfig.guid}/${
-    isPreview ? 'preview' : 'live'
-  }`;
+  let cachePath = `node_modules/@agility/content-sync/cache/${agilityConfig.guid}/${isPreview ? 'preview' : 'live'
+    }`;
 
   if (!isDevelopmentMode) {
     cachePath = `/tmp/agilitycache/${agilityConfig.guid}/${isPreview ? 'preview' : 'live'}`;
@@ -380,7 +383,7 @@ const expandLinkedList = async ({
 };
 
 const asyncForEach = async (array: any, callback: any) => {
-  for (let index = 0; index < array.length; index++) {
+  for (let index = 0;index < array.length;index++) {
     await callback(array[index], index, array);
   }
 };

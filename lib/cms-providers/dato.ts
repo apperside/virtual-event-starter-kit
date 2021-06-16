@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Job, Sponsor, Stage, Speaker } from '@lib/types';
+import { Job, Sponsor, Stage, Speaker, Event } from '@lib/types';
 
 const API_URL = 'https://graphql.datocms.com/';
 const API_TOKEN = process.env.DATOCMS_READ_ONLY_API_TOKEN;
 
-async function fetchCmsAPI(query: string, { variables }: { variables?: Record<string, any> } = {}) {
+async function fetchCmsAPI<T = any>(query: string, { variables }: { variables?: Record<string, any> } = {}) {
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: {
@@ -38,11 +38,11 @@ async function fetchCmsAPI(query: string, { variables }: { variables?: Record<st
     throw new Error('Failed to fetch API');
   }
 
-  return json.data;
+  return json.data as T;
 }
 
 export async function getAllSpeakers(): Promise<Speaker[]> {
-  const data = await fetchCmsAPI(`
+  const data = await fetchCmsAPI<{ allSpeakers: Speaker[] }>(`
     {
       allSpeakers(first: 100) {
         name
@@ -70,7 +70,7 @@ export async function getAllSpeakers(): Promise<Speaker[]> {
 }
 
 export async function getAllStages(): Promise<Stage[]> {
-  const data = await fetchCmsAPI(`
+  const data = await fetchCmsAPI<{ allStages: Stage[] }>(`
     {
       allStages(first: 100, orderBy: order_ASC) {
         name
@@ -97,7 +97,7 @@ export async function getAllStages(): Promise<Stage[]> {
 }
 
 export async function getAllSponsors(): Promise<Sponsor[]> {
-  const data = await fetchCmsAPI(`
+  const data = await fetchCmsAPI<{ allCompanies: Sponsor[] }>(`
     {
       allCompanies(first: 100, orderBy: tierRank_ASC) {
         name
@@ -127,7 +127,7 @@ export async function getAllSponsors(): Promise<Sponsor[]> {
 }
 
 export async function getAllJobs(): Promise<Job[]> {
-  const data = await fetchCmsAPI(`
+  const data = await fetchCmsAPI<{ allJobs: Job[] }>(`
     {
       allJobs(first: 100, orderBy: rank_ASC) {
         id
@@ -142,4 +142,8 @@ export async function getAllJobs(): Promise<Job[]> {
   `);
 
   return data.allJobs;
+}
+
+export function getAllEvents(): Promise<Event[]> {
+  return Promise.resolve([])
 }

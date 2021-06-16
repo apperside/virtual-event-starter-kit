@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { GetStaticProps } from 'next';
-
-import Page from '@components/page';
-import SponsorsGrid from '@components/sponsors-grid';
 import Header from '@components/header';
 import Layout from '@components/layout';
-
+import Page from '@components/page';
+import SponsorsGrid from '@components/sponsors-grid';
 import { getAllSponsors } from '@lib/cms-api';
-import { Sponsor } from '@lib/types';
 import { META_DESCRIPTION } from '@lib/constants';
+import { Sponsor } from '@lib/types';
+import { GetStaticProps } from 'next';
+
+
 
 type Props = {
   sponsors: Sponsor[];
@@ -47,10 +47,9 @@ export default function ExpoPage({ sponsors }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const sponsors = await getAllSponsors();
-
   return {
     props: {
-      sponsors
+      sponsors,
     },
     revalidate: 60
   };

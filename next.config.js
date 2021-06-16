@@ -19,6 +19,7 @@ module.exports = {
     domains: [
       'www.datocms-assets.com',
       'a.storyblok.com',
+      'api.seetingapp.com',
       'images.ctfassets.net',
       'images.prismic.io',
       'cdn.aglty.io',

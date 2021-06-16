@@ -92,11 +92,47 @@ export type ConfUser = {
 
 export type GitHubOAuthData =
   | {
-      type: 'token';
-      token: string;
-    }
+    type: 'token';
+    token: string;
+  }
   | {
-      type: 'user';
-      name: string;
-      login: string;
-    };
+    type: 'user';
+    name: string;
+    login: string;
+  };
+
+
+
+// export type SeetType = "one2one" | "live" | "webinar" | "instore"
+export type SeetType = "seet" | "live" | "webinar" | "webstore"
+export type SeetStatus = "start" | "stop" | undefined
+export type Event = {
+  id: number;
+  title: string;
+  description: string;
+  longDescription: string;
+  roomName: string;
+  date: any;
+  price: string;
+  totalTickets: number;
+  availableTickets: number;
+  duration: number;
+  type: SeetType;
+  albumName: string;
+  spotifyUrl: string;
+  amazonUrl: string;
+  featured: boolean;
+  completed: number;
+  status: SeetStatus;
+  tokens: string;
+  images: Image[];
+  artists: Artist[];
+
+}
+
+export interface Artist {
+  id: number;
+  name: string;
+  smallImage: string;
+  bigImage: string;
+}

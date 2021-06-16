@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-nocheck
 /**
  * Copyright 2020 Vercel Inc.
  *
@@ -13,12 +17,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Job, Sponsor, Stage, Speaker } from '@lib/types';
+import { Job, Sponsor, Stage, Speaker, Event } from '@lib/types';
 
 const API_URL = `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`;
 const API_TOKEN = process.env.CONTENTFUL_ACCESS_TOKEN;
 
-async function fetchCmsAPI(query: string) {
+async function fetchCmsAPI<T = any>(query: string) {
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: {
@@ -37,11 +41,11 @@ async function fetchCmsAPI(query: string) {
     throw new Error('Failed to fetch API');
   }
 
-  return json.data;
+  return json.data as T;
 }
 
 export async function getAllSpeakers(): Promise<Speaker[]> {
-  const data = await fetchCmsAPI(`
+  const data = await fetchCmsAPI<{ speakerCollection: { items: Speaker[] } }>(`
     {
       speakerCollection {
         items {
@@ -171,4 +175,9 @@ export async function getAllJobs(): Promise<Job[]> {
   return data.jobCollection.items.reduce((allJobs: any, job: any) => {
     return [{ id: job.sys.id, ...job }, ...(allJobs || [])];
   }, []);
+}
+
+
+export function getAllEvents(): Promise<Event[]> {
+  return Promise.resolve([])
 }

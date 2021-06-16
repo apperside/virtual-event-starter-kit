@@ -14,61 +14,45 @@
  * limitations under the License.
  */
 
-import { GetStaticProps, GetStaticPaths } from 'next';
+import { GetStaticProps } from 'next';
 
 import Page from '@components/page';
-import SponsorSection from '@components/sponsor-section';
+import SponsorsGrid from '@components/sponsors-grid';
+import EventsGrid from '@components/events-grid';
+import Header from '@components/header';
 import Layout from '@components/layout';
 
-import { getAllSponsors, getAllEvents } from '@lib/cms-api';
-import { Sponsor } from '@lib/types';
+import { getAllEvents, getAllSponsors } from '@lib/cms-api';
+import { Sponsor, Event } from '@lib/types';
 import { META_DESCRIPTION } from '@lib/constants';
 
 type Props = {
-  sponsor: Sponsor;
+  events: Event[]
 };
 
-export default function SponsorPage({ sponsor }: Props) {
+export default function ExpoPage({ events }: Props) {
   const meta = {
-    title: 'Demo - Virtual Event Starter Kit',
+    title: 'Expo - Virtual Event Starter Kit',
     description: META_DESCRIPTION
   };
 
+  console.log("events in page are", events)
   return (
     <Page meta={meta}>
       <Layout>
-        <SponsorSection sponsor={sponsor} />
+        <Header hero="Expo" description={meta.description} />
+        <EventsGrid events={events} />
       </Layout>
     </Page>
   );
 }
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const slug = params?.slug;
-  const sponsors = await getAllSponsors();
-  const sponsor = sponsors.find((s: Sponsor) => s.slug === slug) || null;
-
-  if (!sponsor) {
-    return {
-      notFound: true
-    };
-  }
-
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const events = await getAllEvents();
   return {
     props: {
-      sponsor
+      events
     },
     revalidate: 60
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const sponsors = await getAllSponsors();
-
-  const slugs = sponsors.map((s: Sponsor) => ({ params: { slug: s.slug } }));
-
-  return {
-    paths: slugs,
-    fallback: 'blocking'
   };
 };

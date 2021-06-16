@@ -17,18 +17,18 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
 
 import Page from '@components/page';
-import SponsorSection from '@components/sponsor-section';
+import SpeakerSection from '@components/speaker-section';
 import Layout from '@components/layout';
 
-import { getAllSponsors, getAllEvents } from '@lib/cms-api';
-import { Sponsor } from '@lib/types';
+import { getAllSpeakers } from '@lib/cms-api';
+import { Speaker } from '@lib/types';
 import { META_DESCRIPTION } from '@lib/constants';
 
 type Props = {
-  sponsor: Sponsor;
+  // speaker: Speaker;
 };
 
-export default function SponsorPage({ sponsor }: Props) {
+export default function SpeakerPage({ }: Props) {
   const meta = {
     title: 'Demo - Virtual Event Starter Kit',
     description: META_DESCRIPTION
@@ -37,38 +37,8 @@ export default function SponsorPage({ sponsor }: Props) {
   return (
     <Page meta={meta}>
       <Layout>
-        <SponsorSection sponsor={sponsor} />
+        <h1>EVENTO ACQUISTATO</h1>
       </Layout>
     </Page>
   );
 }
-
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const slug = params?.slug;
-  const sponsors = await getAllSponsors();
-  const sponsor = sponsors.find((s: Sponsor) => s.slug === slug) || null;
-
-  if (!sponsor) {
-    return {
-      notFound: true
-    };
-  }
-
-  return {
-    props: {
-      sponsor
-    },
-    revalidate: 60
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const sponsors = await getAllSponsors();
-
-  const slugs = sponsors.map((s: Sponsor) => ({ params: { slug: s.slug } }));
-
-  return {
-    paths: slugs,
-    fallback: 'blocking'
-  };
-};

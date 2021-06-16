@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Job, Sponsor, Stage, Speaker } from '@lib/types';
+import { Job, Sponsor, Stage, Speaker, Event } from '@lib/types';
 
 const API_URL = 'https://gapi.storyblok.com/v1/api';
 const API_TOKEN = process.env.STORYBLOK_PREVIEW_TOKEN;
@@ -32,12 +32,12 @@ function transformResponse(response: any[], _speakers?: any) {
     Object.keys(item).map(key => {
       // assign the urls directly if not an image
       const noAssign = ['image', 'logo', 'cardImage']
-      if(item[key].url && noAssign.indexOf(key) === -1) {
+      if (item[key].url && noAssign.indexOf(key) === -1) {
         item[key] = item[key].url
       }
 
       // remove nesting from schedule and assign speakers
-      if(key === 'schedule') {
+      if (key === 'schedule') {
         item[key] = item[key].map((slot: { content: any; speaker: any }) => {
           slot = slot.content
           const speakers = _speakers?.filter((speaker: any) => slot.speaker.indexOf(speaker.uuid) !== -1)
@@ -204,4 +204,9 @@ export async function getAllJobs(): Promise<Job[]> {
 
   const transformedData = transformResponse(data.JobItems.items)
   return transformedData;
+}
+
+
+export function getAllEvents(): Promise<Event[]> {
+  return Promise.resolve([])
 }
