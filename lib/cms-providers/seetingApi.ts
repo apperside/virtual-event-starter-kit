@@ -63,6 +63,7 @@ export async function getEventDetails(id: number): Promise<Event> {
 
 export async function getArtists(): Promise<Artist[]> {
   try {
+    console.log(`getting artists from ${BASE_URL}/artists/list`)
     const res = await fetch(`${BASE_URL}/artists/list`, {
       method: 'GET',
       headers: {
