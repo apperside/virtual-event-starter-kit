@@ -24,6 +24,7 @@ import Header from '@components/header';
 import { getAllArtists, getAllSpeakers } from '@lib/cms-api';
 import { Artist, Speaker } from '@lib/types';
 import { META_DESCRIPTION } from '@lib/constants';
+import { useEffect } from "react";
 
 type Props = {
   artists: Artist[];
@@ -34,6 +35,7 @@ export default function Artists({ artists }: Props) {
     title: 'Speakers - Virtual Event Starter Kit',
     description: META_DESCRIPTION
   };
+
   return (
     <Page meta={meta}>
       <Layout>
@@ -45,7 +47,7 @@ export default function Artists({ artists }: Props) {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const artists: any[] = [];//await getAllArtists();
+  const artists: any[] = await getAllArtists();
 
   return {
     props: {

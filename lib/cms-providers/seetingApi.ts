@@ -15,7 +15,8 @@
  */
 import { Job, Sponsor, Stage, Speaker, Event, Artist } from '@lib/types';
 
-
+const BASE_URL = process.env.SEETING_API_URL as string;// "https://apperside.ngrok.io/api";
+// const BASE_URL="https://api.seetingapp.com/api";
 export async function getAllSpeakers(): Promise<Speaker[]> {
   return Promise.resolve([])
 }
@@ -33,7 +34,7 @@ export async function getAllJobs(): Promise<Job[]> {
 }
 
 export async function getAllEvents(): Promise<Event[]> {
-  const res = await fetch("https://api.seetingapp.com/api/events/future", {
+  const res = await fetch(BASE_URL + "/events/future", {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -47,7 +48,7 @@ export async function getAllEvents(): Promise<Event[]> {
 }
 
 export async function getEventDetails(id: number): Promise<Event> {
-  const res = await fetch(`https://api.seetingapp.com/api/events/${id}`, {
+  const res = await fetch(`${BASE_URL}/events/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -61,27 +62,49 @@ export async function getEventDetails(id: number): Promise<Event> {
 }
 
 export async function getArtists(): Promise<Artist[]> {
-  const res = await fetch(`https://api.seetingapp.com/api/artists/all`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  });
+  try {
+    const res = await fetch(`${BASE_URL}/artists/list`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
 
-  const data = await res.json();
-  return Promise.resolve(data.items as Artist[])
+    const json = await res.json();
+    const items = json.items as any[];
+    return items.map((rawArtist) => {
+      return {
+        id: rawArtist.id,
+        bigImage: rawArtist.big_image,
+        smallImage: rawArtist.small_image,
+        name: rawArtist.full_name,
+        genreName: rawArtist.genreName
+      } as Artist
+    })
+  } catch (err) {
+    console.error("erorr getting artists", err);
+    return []
+  }
 
 }
 
 export async function getArtistInfo(id: number): Promise<Artist> {
-  const res = await fetch(`https://api.seetingapp.com/api/artists/${id}`, {
+  const res = await fetch(`${BASE_URL}/artist/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     },
   });
 
-  const data = await res.json();
-  return Promise.resolve(data.artist as Artist)
+  const json = await res.json();
+  const rawArtist = json.data.artist;
+  const result = {
+    id: rawArtist.id,
+    bigImage: rawArtist.big_image,
+    smallImage: rawArtist.small_image,
+    name: rawArtist.full_name,
+    genreName: rawArtist.genreName
+  } as Artist
+  return result
 
 }

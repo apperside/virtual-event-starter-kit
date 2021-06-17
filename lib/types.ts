@@ -135,4 +135,5 @@ export interface Artist {
   name: string;
   smallImage: string;
   bigImage: string;
+  genreName: string
 }

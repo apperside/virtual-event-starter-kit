@@ -17,7 +17,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Artist, Speaker } from '@lib/types';
-import styles from './speakers-grid.module.css';
+import styles from './artists-grid.module.css';
 
 type Props = {
   artists: Artist[];
@@ -26,33 +26,35 @@ type Props = {
 export default function ArtistsGrid({ artists }: Props) {
   return (
     <div className={styles.grid}>
-      {artists.map(artist => (
-        <Link key={artist.name} href={`/artists/${artist.id}`}>
-          <a role="button" tabIndex={0} className={styles.card}>
-            <div className={styles.imageWrapper}>
-              <Image
-                alt={artist.name}
-                src={artist.bigImage}
-                className={styles.image}
-                loading="lazy"
-                quality="50"
-                title={artist.name}
-                width={300}
-                height={300}
-              />
-            </div>
-            <div className={styles.cardBody}>
-              <div>
-                <h2 className={styles.name}>{artist.name}</h2>
-                <p className={styles.title}>
-                  {`${artist.name} @ `}
-                  <span className={styles.company}>{"artist.company"}</span>
-                </p>
+      {artists
+        .filter((artist) => !!artist.bigImage)
+        .map(artist => (
+          <Link key={artist.name} href={`/artist/${artist.id}`}>
+            <a role="button" tabIndex={0} className={styles.card}>
+              <div className={styles.imageWrapper}>
+                <Image
+                  alt={artist.name}
+                  src={artist.bigImage}
+                  className={styles.image}
+                  loading="lazy"
+                  quality="50"
+                  title={artist.name}
+                  width={300}
+                  height={300}
+                />
               </div>
-            </div>
-          </a>
-        </Link>
-      ))}
+              <div className={styles.cardBody}>
+                <div>
+                  <h2 className={styles.name}>{artist.name}</h2>
+                  <p className={styles.title}>
+                    {/* {`${artist.genreName} @ `} */}
+                    <b><span className={styles.company}>{artist.genreName}</span></b>
+                  </p>
+                </div>
+              </div>
+            </a>
+          </Link>
+        ))}
     </div>
   );
 }

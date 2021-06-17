@@ -20,6 +20,7 @@ module.exports = {
       'www.datocms-assets.com',
       'a.storyblok.com',
       'api.seetingapp.com',
+      'apperside.ngrok.io',
       'images.ctfassets.net',
       'images.prismic.io',
       'cdn.aglty.io',

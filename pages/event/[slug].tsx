@@ -62,9 +62,9 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const sponsors = await getAllSponsors();
+  const sponsors = await getAllEvents();
 
-  const slugs = sponsors.map((s: Sponsor) => ({ params: { slug: s.slug } }));
+  const slugs = sponsors.map((s: Event) => ({ params: { slug: String(s.id) } }));
 
   return {
     paths: slugs,

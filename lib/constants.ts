@@ -60,14 +60,14 @@ export const NAVIGATION = [
   //   name: 'Schedule',
   //   route: '/schedule'
   // },
+  // {
+  //   name: 'Speakers',
+  //   route: '/speakers'
+  // },
   {
     name: 'Artisti',
-    route: '/speakers'
+    route: '/artists'
   },
-  // {
-  //   name: 'Artisti',
-  //   route: '/artists'
-  // },
   // {
   //   name: 'Expo',
   //   route: '/expo'
