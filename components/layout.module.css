@@ -71,7 +71,9 @@
 
 .tabs {
   height: 100%;
-  display: none;
+  flex-grow: 1;
+  justify-content: center;
+  display: flex !important;
 }
 
 @media screen and (min-width: 1032px) {

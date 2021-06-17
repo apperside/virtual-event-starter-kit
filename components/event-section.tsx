@@ -21,6 +21,8 @@ import cn from 'classnames';
 import { Sponsor, Event } from '@lib/types';
 import styles from './event-section.module.css';
 import styleUtils from './utils.module.css';
+import React, { useState } from "react";
+import Loader from "./loader";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // import { loadStripe } from '@stripe/stripe-js';
 
@@ -37,8 +39,10 @@ type Props = {
 };
 
 export default function SponsorSection({ event }: Props) {
+  const [isLoading, setIsLoading] = useState(false)
   // console
   const pay = () => {
+    setIsLoading(true)
     //@ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const stripe = Stripe("pk_test_51IdwlJCgP78hQYYmKOkQb91h1gM6VNDgrXrYbcpDUGGt3F5JWSBRYhajmoJaQg1suf8DNPNVQRZzviMpkMKhJ1H4006PUY8hcC");
@@ -120,7 +124,11 @@ export default function SponsorSection({ event }: Props) {
               type="button"
               className={styles.button}
             >
-              ACQUISTA
+              {!!isLoading &&
+                <Loader />
+              }
+              {!isLoading && "ACQUISTA"
+              }
             </button>
             <a
               // href={sponsor.discord}
