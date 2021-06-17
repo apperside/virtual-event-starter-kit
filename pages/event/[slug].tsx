@@ -43,7 +43,7 @@ export default function SponsorPage({ event }: Props) {
   );
 }
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+export const getServerSideProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug;
   const event = await getEventDetails(slug as any);
 
@@ -57,17 +57,17 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     props: {
       event
     },
-    revalidate: 60
+    // revalidate: 60
   };
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const sponsors = await getAllEvents();
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const sponsors = await getAllEvents();
 
-  const slugs = sponsors.map((s: Event) => ({ params: { slug: String(s.id) } }));
+//   const slugs = sponsors.map((s: Event) => ({ params: { slug: String(s.id) } }));
 
-  return {
-    paths: slugs,
-    fallback: 'blocking'
-  };
-};
+//   return {
+//     paths: slugs,
+//     fallback: 'blocking'
+//   };
+// };

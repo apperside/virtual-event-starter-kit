@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GetStaticProps, GetStaticPaths } from 'next';
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
 
 import Page from '@components/page';
 import ArtistSection from '@components/artist-section';
@@ -45,7 +45,7 @@ export default function ArtistPage(props: Props) {
   );
 }
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
   console.log("ciao")
   const slug = params?.slug;
   const artist = await getArtistInfo(slug as any)
@@ -63,16 +63,17 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     props: {
       artist//: { "id": 56, "name": "Tredici Pietro 2", "smalllImage": "https://apperside.ngrok.io/artists-images/b3a43aaba22a50ab6cfa768e754f4ee4.PNG", "bigImage": "https://apperside.ngrok.io/artists-images/16e2c2a27e5813a8eb07e7101197a9cf.PNG", "genreName": "Rap" } as Artist
     },
-    revalidate: 60
+    // revalidate: 60
   };
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const artists = await getAllArtists();
-  const slugs = artists.map((s: Artist) => ({ params: { slug: String(s.id) } }));
-  // const data = await Promise.resolve([])
-  return {
-    paths: slugs,
-    fallback: false
-  };
-};
+// export const getStaticPaths: GetStaticPaths = async (prova: any) => {
+//   console.log("prova is", prova)
+//   const artists = await getAllArtists();
+//   const slugs = artists.map((s: Artist) => ({ params: { slug: String(s.id) } }));
+//   // const data = await Promise.resolve([])
+//   return {
+//     paths: [],//slugs,
+//     fallback: false
+//   };
+// };
