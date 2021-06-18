@@ -1,0 +1,14 @@
+--- node_modules/next-auth/dist/server/lib/callback-handler.js	2021-06-18 18:16:02.000000000 +0200
++++ patches/next-auth/dist/server/lib/callback-handler.js	2021-06-18 18:20:41.000000000 +0200
+@@ -150,6 +150,11 @@
+ 
+       if (userByEmail) {
+         // throw new _errors.AccountNotLinkedError();
++        /**
++         * If found by email, link user.
++         * THIS IS NOT SAFE as stated here https://github.com/nextauthjs/next-auth/pull/1002
++         * but improves user experience
++         */
+         await linkAccount(userByEmail.id, providerAccount.provider, providerAccount.type, providerAccount.id, providerAccount.refreshToken, providerAccount.accessToken, providerAccount.accessTokenExpires);
+       }
+ 

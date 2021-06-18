@@ -15,6 +15,7 @@
  */
 
 import { SSRProvider, OverlayProvider } from 'react-aria';
+import { Provider as AuthProvider, signIn, useSession } from 'next-auth/client'
 import '@styles/global.css';
 import '@styles/nprogress.css';
 import '@styles/chrome-bug.css';
@@ -22,18 +23,53 @@ import type { AppProps } from 'next/app';
 import NProgress from '@components/nprogress';
 import ResizeHandler from '@components/resize-handler';
 import { useEffect } from 'react';
+import React from "react";
+
+const Auth: React.FC = ({ children }) => {
+  const [session, loading] = useSession()
+  const isUser = !!session?.user
+  React.useEffect(() => {
+    if (loading) return // Do nothing while loading
+    if (!isUser) signIn()
+      .then(result => {
+        console.log("result", result)
+      })
+      .catch(err => {
+        console.error(err)
+      }) // If not authenticated, force log in
+  }, [isUser, loading])
+
+  if (isUser) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return children as any;
+  }
+
+  // Session is being fetched, or no user.
+  // If no user, useEffect() will redirect.
+  return <div>Loading...</div>
+}
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [session] = useSession();
   useEffect(() => {
     document.body.classList?.remove('loading');
   }, []);
   return (
-    <SSRProvider>
-      <OverlayProvider>
-        <Component {...pageProps} />
-        <ResizeHandler />
-        <NProgress />
-      </OverlayProvider>
-    </SSRProvider>
+    <AuthProvider session={session!}>
+      <SSRProvider>
+        <OverlayProvider>
+          {(Component as any).auth ? (
+            <Auth>
+              <Component {...pageProps} />
+            </Auth>
+          ) : (
+            <Component {...pageProps} />
+          )}
+          <ResizeHandler />
+          <NProgress />
+        </OverlayProvider>
+      </SSRProvider>
+    </AuthProvider>
   );
 }
+
