@@ -1,7 +1,32 @@
+import { authEvents } from "@lib/auth"
 import Models from "models"
-import NextAuth from 'next-auth'
+import { EventEntity, EventSchema } from "models/Event"
+import NextAuth, { Session, User } from 'next-auth'
 import Adapters from "next-auth/adapters"
+import { JWT, DefaultJWT } from "next-auth/jwt"
 import Providers from 'next-auth/providers'
+
+declare module 'next-auth/jwt' {
+	// export interface JWT extends Record<string, unknown>, DefaultJWT {
+	// 	userId?: number
+	// }
+}
+declare module 'next-auth' {
+	export interface Session {
+		user?: {
+			name?: string | null
+			email?: string | null
+			image?: string | null
+			userId?: number
+		}
+	}
+
+	export interface User {
+		userId?: number
+	}
+
+
+}
 
 export default NextAuth({
 	// Configure one or more authentication providers
@@ -64,11 +89,20 @@ export default NextAuth({
 		// The first argument should be a database connection string or TypeORM config object
 		"mysql://root:ciaociaociao@127.0.0.1:3306/seeting_local",
 		// The second argument can be used to pass custom models and schemas
-		// {
-		// 	models: {
-		// 		User: Models.User,
-		// 	},
-		// }
+		{
+			models: {
+				User: Models.User,
+				Account: Adapters.TypeORM.Models.Account,
+				Session: Adapters.TypeORM.Models.Session,
+				VerificationRequest: Adapters.TypeORM.Models.VerificationRequest,
+				//@ts-ignore
+				Events: {
+					schema: EventSchema,
+					model: EventEntity
+				}
+				// Event: Models.Events
+			},
+		}
 	),
 	// A database is optional, but required to persist accounts in a database
 	// database: {
@@ -136,15 +170,27 @@ export default NextAuth({
 	// https://next-auth.js.org/configuration/callbacks
 	callbacks: {
 		// eslint-disable-next-line @typescript-eslint/require-await
-		async signIn(user, account, profile) { return true },
+		async signIn(user, account, profile) {
+			console.log("signin")
+			return true
+		},
 		// async redirect(url, baseUrl) { return baseUrl },
 		// async session(session, user) { return session },
-		// async jwt(token, user, account, profile, isNewUser) { return token }
+		// eslint-disable-next-line @typescript-eslint/require-await
+		async jwt(token, user, account, profile, isNewUser) {
+			return { userId: user?.id, ...token }
+		},
+		// eslint-disable-next-line @typescript-eslint/require-await
+		async session(session: Session, token: User | JWT) {
+			// Add property to session, like an access_token from a provider.
+			session.user = { ...session.user, userId: token.userId } as any
+			return session
+		}
 	},
 
 	// Events are useful for logging
 	// https://next-auth.js.org/configuration/events
-	events: {},
+	events: authEvents,
 
 	// You can set the theme to 'light', 'dark' or use 'auto' to default to the
 	// whatever prefers-color-scheme is set to in the browser. Default is 'auto'

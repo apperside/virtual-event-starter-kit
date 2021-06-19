@@ -21,10 +21,13 @@ import cn from 'classnames';
 import { Sponsor, Event } from '@lib/types';
 import styles from './event-section.module.css';
 import styleUtils from './utils.module.css';
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Loader from "./loader";
+import getStripe from "@lib/stripe";
+import { StripeCardElement } from "@stripe/stripe-js";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // import { loadStripe } from '@stripe/stripe-js';
+
 
 //@ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -37,39 +40,134 @@ import Loader from "./loader";
 type Props = {
   event: Event;
 };
+//@ts-ignore
 
 export default function SponsorSection({ event }: Props) {
   const [isLoading, setIsLoading] = useState(false)
+  const stripeCard = useRef<StripeCardElement>()
   // console
   const pay = () => {
     setIsLoading(true)
-    //@ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const stripe = Stripe("pk_test_51IdwlJCgP78hQYYmKOkQb91h1gM6VNDgrXrYbcpDUGGt3F5JWSBRYhajmoJaQg1suf8DNPNVQRZzviMpkMKhJ1H4006PUY8hcC");
+
+
+    // alert(stripe.confirmCardPayment)
     //@ts-ignore
-    fetch("/api/checkout", {
+    fetch("/api/payments/init", {
       method: "POST",
+
+      body: JSON.stringify({
+        eventId: event.id
+      })
     })
       .then(function (response) {
         return response.json();
       })
-      .then(function (session) {
+      .then(function (result) {
+        console.log("result is", result)
+        if (result.clientSecret) {
+          alert("submit")
+          getStripe()
+            .then((stripe) => {
+              console.log("has stripe", !!stripe)
+              stripe?.confirmCardPayment(result.clientSecret, {
+                payment_method: {
+                  card: stripeCard.current!,
+                  billing_details: {
+                    name: 'Jenny Rosen'
+                  }
+                },
+                setup_future_usage: 'off_session'
+              })
+                .then((result) => {
+                  alert("ok")
+                  setIsLoading(false)
+                })
+                .catch(err => {
+                  setIsLoading(false)
+                  alert("err")
+                })
+            })
+            .catch(err => {
+              setIsLoading(false)
+              alert("no stripe")
+            })
+        }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        return stripe.redirectToCheckout({ sessionId: session.id });
+        // return stripe.redirectToCheckout({ sessionId: session.id });
       })
       .then(function (result) {
+        setIsLoading(false)
         // If redirectToCheckout fails due to a browser or network
         // error, you should display the localized error message to your
         // customer using error.message.
-        if (result.error) {
-          alert(result.error.message);
-        }
+        // if (result.error) {
+        //   alert(result.error.message);
+        // }
       })
       .catch(function (error) {
+        setIsLoading(false)
         console.error("Error:", error);
+        alert("error")
       });
   }
+
+  useEffect(() => {
+    const init = async () => {
+      const stripe = await getStripe()
+
+      // const stripe = Stripe("pk_test_51IdwlJCgP78hQYYmKOkQb91h1gM6VNDgrXrYbcpDUGGt3F5JWSBRYhajmoJaQg1suf8DNPNVQRZzviMpkMKhJ1H4006PUY8hcC");
+      if (stripe) {
+        const elements = stripe.elements();
+        const style = {
+          base: {
+            color: "red",
+          }
+        };
+
+        const card = elements.create("card", {
+          style: {
+            base: {
+              iconColor: 'white',
+              color: '#0bb07a',
+              fontWeight: '500',
+              fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
+              fontSize: '16px',
+              fontSmoothing: 'antialiased',
+              ':-webkit-autofill': {
+                color: '#fce883',
+              },
+              '::placeholder': {
+                color: '#0bb07a',
+              },
+            },
+            invalid: {
+              iconColor: 'red',
+              color: 'red',
+            },
+          }
+        });
+        stripeCard.current = card;
+        card.on('change', function (event) {
+          const displayError = document.getElementById('card-errors');
+          if (displayError) {
+            if (event.error) {
+              displayError.textContent = event.error.message;
+            } else {
+              displayError.textContent = '';
+            }
+          }
+        });
+        console.log("card is", card)
+        card.mount("#card-element");
+      }
+      else {
+        alert("no stripe")
+      }
+    }
+    init()
+  }, [])
   return (
     <>
       <Link href="/expo">
@@ -115,8 +213,15 @@ export default function SponsorSection({ event }: Props) {
             <h1 className={styles.name}>{event.artists[0].name}</h1>
           </div>
           <p className={styles.description}>{event.description}</p>
+          <div style={{}} id="card-element">
+
+          </div>
           <div className={styles['sponsor-details']}>
+
+
+            <div id="card-errors" role="alert"></div>
             <button
+              id="submit"
               // href={sponsor.callToActionLink}
               // target="_blank"
               // rel="noopener noreferrer"

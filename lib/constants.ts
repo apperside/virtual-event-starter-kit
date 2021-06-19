@@ -76,6 +76,10 @@ export const NAVIGATION = [
     name: 'Eventi',
     route: '/events'
   },
+  {
+    name: 'Eventi prenotati',
+    route: '/booked-events'
+  },
   // {
   //   name: 'Jobs',
   //   route: '/jobs'

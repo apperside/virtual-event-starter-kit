@@ -26,6 +26,6 @@ module.exports = {
       'cdn.aglty.io',
       'localhost' // For Strapi
     ],
-    imageSizes: [24, 64, 300]
+    imageSizes: [24, 64, 300],
   }
 };
