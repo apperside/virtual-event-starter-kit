@@ -2,7 +2,7 @@ import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { EntitySchema } from "typeorm";
 
 export const EventSchema: EntitySchemaOptions<{ id: number, name: string }> = {
-	name: "events",
+	name: "Event",
 	columns: {
 		id: {
 			type: Number,
