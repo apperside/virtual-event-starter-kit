@@ -25,18 +25,18 @@ export default function Hero() {
       <h2
         className={cn(
           styleUtils.appear,
-          styleUtils['appear-third'],
+          styleUtils['appear-second'],
           styleUtils['show-on-mobile'],
           styles.description
         )}
       >
         {SITE_DESCRIPTION}
       </h2>
-      <h1 className={cn(styleUtils.appear, styleUtils['appear-third'], styles.hero)}>
-        The first {BRAND_NAME}
-        <br className={styleUtils['show-on-desktop']} /> global user conference
+      <h1 className={cn(styleUtils.appear, styleUtils['appear-second'], styles.hero)}>
+        SEETING
+        {/* <br className={styleUtils['show-on-desktop']} /> global user conference */}
       </h1>
-      <h2
+      {/* <h2
         className={cn(
           styleUtils.appear,
           styleUtils['appear-third'],
@@ -45,13 +45,13 @@ export default function Hero() {
         )}
       >
         {SITE_DESCRIPTION}
-      </h2>
-      <div className={cn(styleUtils.appear, styleUtils['appear-fourth'], styles.info)}>
-        <p>{DATE}</p>
-        <div className={styles['description-separator']} />
-        <p>
+      </h2> */}
+      <div className={cn(styleUtils.appear, styleUtils['appear-third'], styles.info)}>
+        <p>NON SEI MAI STATO COSI VICINO!</p>
+        {/* <div className={styles['description-separator']} /> */}
+        {/* <p>
           <strong>Online</strong>
-        </p>
+        </p> */}
       </div>
     </div>
   );

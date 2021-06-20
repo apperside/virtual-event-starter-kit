@@ -45,9 +45,9 @@ export default function BookedEventsPage({ events }: Props) {
   return (
     <Page meta={meta}>
       <Layout>
-        <Header hero="Expo" description={meta.description} />
-        <div>ciao {JSON.stringify(session)}</div>
-        <Link href="/api/auth/signout">LOGOUT</Link>
+        <Header hero="Eventi" description={meta.description} />
+        <div style={{ marginLeft: 32 }}>ciao {(session?.user as any)?.name}</div>
+        <Link href="/api/auth/signout"><b><span style={{ marginLeft: 32, color: "#0bb07a" }}>LOGOUT</span></b></Link>
         <EventsGrid events={events} />
       </Layout>
     </Page>

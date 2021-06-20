@@ -68,12 +68,19 @@
     display: initial;
   }
 }
+@media screen and (min-width: 770px) {
+  .tabs {
+    height: 100%;
+    flex-grow: 1;
+    justify-content: center;
+    display: flex !important;
+  }
+}
 
-.tabs {
-  height: 100%;
-  flex-grow: 1;
-  justify-content: center;
-  display: flex !important;
+@media screen and (max-width: 770px) {
+  .tabs {
+    display: none;
+  }
 }
 
 @media screen and (min-width: 1032px) {

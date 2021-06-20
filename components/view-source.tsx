@@ -18,6 +18,7 @@ import styles from './view-source.module.css';
 import { REPO } from '@lib/constants';
 
 export default function ViewSource() {
+  return null;
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

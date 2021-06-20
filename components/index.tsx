@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { PageState, ConfDataContext, UserData } from '@lib/hooks/use-conf-data';
 import Ticket from './ticket';
 import Layout from './layout';
@@ -22,7 +22,10 @@ import ConfContainer from './conf-container';
 import Hero from './hero';
 import Form from './form';
 import LearnMore from './learn-more';
-
+import cn from 'classnames';
+import styles from "./index.module.css"
+import styleUtils from './utils.module.css';
+import Link from "next/link";
 type Props = {
   defaultUserData: UserData;
   sharePage?: boolean;
@@ -50,8 +53,19 @@ export default function Conf({
           {pageState === 'registration' && !sharePage ? (
             <>
               <Hero />
-              <Form />
-              <LearnMore />
+              {/* <Form /> */}
+              <div className={cn(styleUtils.appear, styleUtils['appear-fourth'])} style={{ marginBottom: 50 }}>
+                <Link href="/events">
+                  <button
+                    type="submit"
+                    className={cn(styles.submit, styles.register)}
+
+                  >
+                    MOSTRA EVENTI
+                  </button>
+                </Link>
+              </div>
+              {/* <LearnMore /> */}
             </>
           ) : (
             <Ticket
