@@ -14,8 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		try {
 			console.log("stripe callback", req.body)
 			const stripe = getServerSideStripe();
-			const payload = req.body;
-			const buf = await buffer(req);
+			const buf = await buffer(req) as string;
 			const sig = req.headers['stripe-signature'];
 			//@ts-ignore
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -25,42 +24,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 			try {
 				// event = stripe.webhooks.constructEvent(payload, sig!, "whsec_1CpuhvDY5tqEHU0WqvPSCgXEg6mSCCM0");
-				event = stripe.webhooks.constructEvent(buf, sig!, "whsec_Qd2vDHtn4bnoG418aFVxh89H2RKNQvsd");
-				console.log("event", event)
+				event = stripe.webhooks.constructEvent(buf, sig!, process.env.STRIPE_WEBOOK_SECRET!);
+				console.log("stripe signature callback verified", event)
 			} catch (err) {
 				return res.status(400).send(`Webhook Error: ${err.message}`);
 			}
 
 
 
-			const eventData = req.body;
+			const eventData = JSON.parse(buf);
 
 			// Handle the event
 			switch (eventData.type) {
 				case 'payment_intent.succeeded':
+				case "checkout.session.completed":
 					const paymentIntent = eventData.data.object;
 					console.log('PaymentIntent was successful!');
 
-					const metadata: any | undefined = payload.data.object.metadata;
+					const metadata: any | undefined = eventData.data.object.metadata;
 					console.log("metadata", metadata)
 					const eventId = metadata.eventId;
 					const conns = getConnectionManager().connections;
 					const users = await dbManager.getModel("User");
-					const user = await users.findOne({ where: { stripeCustomerId: payload.data.object.customer } }) as any
-					const bookings = await dbManager.getModel("Booking");
-					const bookingByPaymentId = await bookings.findOne({ paymentId: payload.data.object.id })
-					if (!bookingByPaymentId) {
-						const createResult = await bookings.save({ userId: user?.id, eventId, paymentType: "stripe", paymentId: payload.data.object.id });
-					}
-
-					let event;
-
-					try {
-						// event = stripe.webhooks.constructEvent(payload, sig!, "whsec_1CpuhvDY5tqEHU0WqvPSCgXEg6mSCCM0");
-						event = stripe.webhooks.constructEvent(payload, sig!, "whsec_Qd2vDHtn4bnoG418aFVxh89H2RKNQvsd");
-						console.log("event", event)
-					} catch (err) {
-						return res.status(400).send(`Webhook Error: ${err.message}`);
+					const user = await users.findOne({ where: { stripeCustomerId: eventData.data.object.customer } }) as any
+					if (user) {
+						const bookings = await dbManager.getModel("Booking");
+						const bookingByPaymentId = await bookings.findOne({ paymentId: eventData.data.object.id })
+						if (!bookingByPaymentId) {
+							const createResult = await bookings.save({ userId: user?.id, eventId, paymentType: "stripe", paymentId: eventData.data.object.id });
+						}
 					}
 
 					res.status(200);
@@ -72,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					break;
 				// ... handle other event types
 				default:
-					return res.status(400).send(`Unhandled event type ${eventData.type}`)
+					return res.status(200).send(`Unhandled event type ${eventData.type}`)
 			}
 		} catch (err) {
 			console.error("error in request", err);

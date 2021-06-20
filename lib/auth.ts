@@ -1,8 +1,7 @@
-import { dbManager } from './database';
 import { EventCallback, JWTEventCallbacks, Session, SessionEventCallbacks, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import getStripe, { getServerSideStripe } from "./stripe";
-import { getConnectionManager } from "typeorm";
+import { dbManager } from './database';
+import { getServerSideStripe } from "./stripe";
 
 
 const userCreated: EventCallback<User> = async (data) => {

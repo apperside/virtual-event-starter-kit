@@ -104,100 +104,100 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 
-const generateResponse = async (intent: { status: any; client_secret: any; id: any; }, paymentMethodId: any, userId: any, seetId: any) => {
-	console.log('intent', intent)
-	// Generate a response based on the intent's status
-	switch (intent.status) {
-		case "requires_action":
-		case "requires_source_action":
-		case "requires_confirmation":
-			// Card requires authentication
-			return {
-				requiresAction: true,
-				clientSecret: intent.client_secret
-			};
-		case "requires_payment_method":
-		case "requires_source":
-			// Card was not properly authenticated, suggest a new payment method
-			return {
-				error: "Your card was denied, please provide a new payment method"
-			};
-		case "succeeded":
-		// const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId)
-		// // save user payment method for future usage
-		// // await db.newStripePaymentMethod(userId, paymentMethodId, paymentMethod.card.brand, `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`, paymentMethod.card.last4)
-		// // await db.newStripePayment(userId, seetId, paymentMethodId, intent.id)
-		// console.log("calling book event online from stripe success with the following data ", {
-		// 	paymentMethod: 'stripe',
-		// 	stripeOrderid: intent.id,
-		// 	brand: paymentMethod.card.brand,
-		// 	exp: `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`,
-		// 	last4: paymentMethod.card.last4,
-		// 	paymentMethodId
-		// }, seetId, userId)
+// const generateResponse = async (intent: { status: any; client_secret: any; id: any; }, paymentMethodId: any, userId: any, seetId: any) => {
+// 	console.log('intent', intent)
+// 	// Generate a response based on the intent's status
+// 	switch (intent.status) {
+// 		case "requires_action":
+// 		case "requires_source_action":
+// 		case "requires_confirmation":
+// 			// Card requires authentication
+// 			return {
+// 				requiresAction: true,
+// 				clientSecret: intent.client_secret
+// 			};
+// 		case "requires_payment_method":
+// 		case "requires_source":
+// 			// Card was not properly authenticated, suggest a new payment method
+// 			return {
+// 				error: "Your card was denied, please provide a new payment method"
+// 			};
+// 		case "succeeded":
+// 		// const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId)
+// 		// // save user payment method for future usage
+// 		// // await db.newStripePaymentMethod(userId, paymentMethodId, paymentMethod.card.brand, `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`, paymentMethod.card.last4)
+// 		// // await db.newStripePayment(userId, seetId, paymentMethodId, intent.id)
+// 		// console.log("calling book event online from stripe success with the following data ", {
+// 		// 	paymentMethod: 'stripe',
+// 		// 	stripeOrderid: intent.id,
+// 		// 	brand: paymentMethod.card.brand,
+// 		// 	exp: `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`,
+// 		// 	last4: paymentMethod.card.last4,
+// 		// 	paymentMethodId
+// 		// }, seetId, userId)
 
-		// const eventDetail = await db.bookEventOnline(
-		//     {
-		//         paymentMethod: 'stripe',
-		//         stripeOrderid: intent.id,
-		//         brand: paymentMethod.card.brand,
-		//         exp: `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`,
-		//         last4: paymentMethod.card.last4,
-		//         paymentMethodId
-		//     },
-		//     seetId,
-		//     userId
-		// )
-		// console.log('Booked event details ==> ', eventDetail)
+// 		// const eventDetail = await db.bookEventOnline(
+// 		//     {
+// 		//         paymentMethod: 'stripe',
+// 		//         stripeOrderid: intent.id,
+// 		//         brand: paymentMethod.card.brand,
+// 		//         exp: `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`,
+// 		//         last4: paymentMethod.card.last4,
+// 		//         paymentMethodId
+// 		//     },
+// 		//     seetId,
+// 		//     userId
+// 		// )
+// 		// console.log('Booked event details ==> ', eventDetail)
 
-		// if (!eventDetail)
-		//     return {
-		//         result: false,
-		//         message: 'err'
-		//     }
-		// ioProducer.ticketSoldOnEvent(eventDetail.id)
+// 		// if (!eventDetail)
+// 		//     return {
+// 		//         result: false,
+// 		//         message: 'err'
+// 		//     }
+// 		// ioProducer.ticketSoldOnEvent(eventDetail.id)
 
-		// let eventDetail = await db.getBookedEventDetail(userId, booked.code)
+// 		// let eventDetail = await db.getBookedEventDetail(userId, booked.code)
 
-		// const eventDate = new Date(eventDetail.date)
-		// const formattedEventDate = `${('0' + eventDate.getDate()).slice(-2)}/${('0' + (eventDate.getMonth() + 1)).slice(-2)}/${eventDate.getFullYear()}`;
+// 		// const eventDate = new Date(eventDetail.date)
+// 		// const formattedEventDate = `${('0' + eventDate.getDate()).slice(-2)}/${('0' + (eventDate.getMonth() + 1)).slice(-2)}/${eventDate.getFullYear()}`;
 
-		// const eventImages = await db.getEventImages(seetId)
-		// const position = await db.getUserPosition(userId, seetId)
+// 		// const eventImages = await db.getEventImages(seetId)
+// 		// const position = await db.getUserPosition(userId, seetId)
 
-		// console.log("event link", `${process.env.DOMAIN_EVENT_ROOT}/events/${eventDetail.id}`)
-		// const emailSender = new EmailSender(EmailSender.TEMPLATES.EVENT_BOOKED_ALERT, {
-		//     "artistName": eventDetail.artistName,
-		//     "eventName": eventDetail.title,
-		//     "eventDescription": eventDetail.description,
-		//     "eventDate": formattedEventDate,
-		//     "eventTime": `${('0'+eventDate.getHours()).slice(-2)}:${('0'+eventDate.getMinutes()).slice(-2)}`,
-		//     "eventUrl": `${process.env.DOMAIN_EVENT_ROOT}/events/${eventDetail.id}`,
-		//     "artistImage": `${process.env.ARTISTS_IMAGES_URL}${eventDetail.artistPicture}`
-		// })
-		// emailSender.sendTo(eventDetail.userEmail)
-		// return {
-		//     result: true,
-		//     requiresAction: false,
-		//     data: {
-		//         seet: {
-		//             id: eventDetail.id,
-		//             title: eventDetail.title,
-		//             description: eventDetail.description,
-		//             longDescription: eventDetail.longDescription,
-		//             date: eventDetail.date,
-		//             price: eventDetail.price,
-		//             totalTickets: eventDetail.totalTickets,
-		//             availableTickets: eventDetail.availableTickets,
-		//             duration: eventDetail.duration,
-		//             type: eventDetail.type,
-		//             tokens: eventDetail.tokens,
-		//             eventImages: eventImages.map(u => process.env.EVENTS_IMAGES_URL + u.url)
-		//         },
-		//         jitsiCode: eventDetail.jitsiCode,
-		//         queuePosition: position
-		//     }
-		// };
+// 		// console.log("event link", `${process.env.DOMAIN_EVENT_ROOT}/events/${eventDetail.id}`)
+// 		// const emailSender = new EmailSender(EmailSender.TEMPLATES.EVENT_BOOKED_ALERT, {
+// 		//     "artistName": eventDetail.artistName,
+// 		//     "eventName": eventDetail.title,
+// 		//     "eventDescription": eventDetail.description,
+// 		//     "eventDate": formattedEventDate,
+// 		//     "eventTime": `${('0'+eventDate.getHours()).slice(-2)}:${('0'+eventDate.getMinutes()).slice(-2)}`,
+// 		//     "eventUrl": `${process.env.DOMAIN_EVENT_ROOT}/events/${eventDetail.id}`,
+// 		//     "artistImage": `${process.env.ARTISTS_IMAGES_URL}${eventDetail.artistPicture}`
+// 		// })
+// 		// emailSender.sendTo(eventDetail.userEmail)
+// 		// return {
+// 		//     result: true,
+// 		//     requiresAction: false,
+// 		//     data: {
+// 		//         seet: {
+// 		//             id: eventDetail.id,
+// 		//             title: eventDetail.title,
+// 		//             description: eventDetail.description,
+// 		//             longDescription: eventDetail.longDescription,
+// 		//             date: eventDetail.date,
+// 		//             price: eventDetail.price,
+// 		//             totalTickets: eventDetail.totalTickets,
+// 		//             availableTickets: eventDetail.availableTickets,
+// 		//             duration: eventDetail.duration,
+// 		//             type: eventDetail.type,
+// 		//             tokens: eventDetail.tokens,
+// 		//             eventImages: eventImages.map(u => process.env.EVENTS_IMAGES_URL + u.url)
+// 		//         },
+// 		//         jitsiCode: eventDetail.jitsiCode,
+// 		//         queuePosition: position
+// 		//     }
+// 		// };
 
-	}
-};
+// 	}
+// };

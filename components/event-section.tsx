@@ -23,8 +23,9 @@ import styles from './event-section.module.css';
 import styleUtils from './utils.module.css';
 import React, { useEffect, useRef, useState } from "react";
 import Loader from "./loader";
-import getStripe from "@lib/stripe";
 import { StripeCardElement } from "@stripe/stripe-js";
+import { Stripe, loadStripe } from '@stripe/stripe-js'
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // import { loadStripe } from '@stripe/stripe-js';
 
@@ -40,83 +41,66 @@ import { StripeCardElement } from "@stripe/stripe-js";
 type Props = {
   event: Event;
 };
-//@ts-ignore
+let stripePromise: Promise<Stripe | null>
 
+//@ts-ignore
+const getStripe = () => {
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  if (!stripePromise) {
+    stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);//"pk_test_51IdwlJCgP78hQYYmKOkQb91h1gM6VNDgrXrYbcpDUGGt3F5JWSBRYhajmoJaQg1suf8DNPNVQRZzviMpkMKhJ1H4006PUY8hcC")
+  }
+  return stripePromise
+}
 export default function SponsorSection({ event }: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const stripeCard = useRef<StripeCardElement>()
   // console
-  const pay = () => {
+  const pay = async () => {
     setIsLoading(true)
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
 
-
-    // alert(stripe.confirmCardPayment)
-    //@ts-ignore
-    fetch("/api/payments/init", {
+    const createPaymentIntentResponse = await fetch("/api/payments/init", {
       method: "POST",
 
       body: JSON.stringify({
         eventId: event.id
       })
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (result) {
-        console.log("result is", result)
-        if (result.clientSecret) {
-          getStripe()
-            .then((stripe) => {
-              console.log("has stripe", !!stripe)
-              stripe?.confirmCardPayment(result.clientSecret, {
-                payment_method: {
-                  card: stripeCard.current!,
-                  billing_details: {
-                    name: 'Jenny Rosen'
-                  }
-                },
-                setup_future_usage: 'off_session'
-              })
-                .then((result) => {
-                  alert("ok")
-                  setIsLoading(false)
-                })
-                .catch(err => {
-                  setIsLoading(false)
-                  alert("err")
-                })
-            })
-            .catch(err => {
-              setIsLoading(false)
-              alert("no stripe")
-            })
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        // return stripe.redirectToCheckout({ sessionId: session.id });
-      })
-      .then(function (result) {
-        setIsLoading(false)
-        // If redirectToCheckout fails due to a browser or network
-        // error, you should display the localized error message to your
-        // customer using error.message.
-        // if (result.error) {
-        //   alert(result.error.message);
-        // }
-      })
-      .catch(function (error) {
-        setIsLoading(false)
-        console.error("Error:", error);
+    });
+    const paymentIntent = await createPaymentIntentResponse.json();
+    console.log("result is", paymentIntent)
+    if (paymentIntent.clientSecret) {
+      const stripe = await getStripe();
+      console.log("has stripe", !!stripe)
+      try {
+        const confirmResult = await stripe?.confirmCardPayment(paymentIntent.clientSecret, {
+          payment_method: {
+            card: stripeCard.current!,
+            billing_details: {
+              name: 'Jenny Rosen'
+            }
+          },
+          setup_future_usage: 'off_session'
+        });
+        alert("ok")
+      } catch (err) {
         alert("error")
-      });
+      }
+      finally {
+        setIsLoading(false)
+      }
+    }
+    else {
+      setIsLoading(false)
+      alert("error")
+    }
   }
 
   useEffect(() => {
+    console.log(process.env)
+
     const init = async () => {
       const stripe = await getStripe()
 
-      // const stripe = Stripe("pk_test_51IdwlJCgP78hQYYmKOkQb91h1gM6VNDgrXrYbcpDUGGt3F5JWSBRYhajmoJaQg1suf8DNPNVQRZzviMpkMKhJ1H4006PUY8hcC");
       if (stripe) {
         const elements = stripe.elements();
         const style = {
@@ -166,6 +150,7 @@ export default function SponsorSection({ event }: Props) {
       }
     }
     init()
+      .then(res => console.log(res)).catch(err => console.error(err))
   }, [])
   return (
     <>

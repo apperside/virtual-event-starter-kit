@@ -18,19 +18,19 @@ import ms from 'ms';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getAllStages } from '@lib/cms-api';
 import { SITE_ORIGIN } from "@lib/constants";
+import { getServerSideStripe } from "@lib/stripe";
 // Number of seconds to cache the API response for
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const stripeLib = require('stripe')
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-const stripe = stripeLib('sk_test_51IdwlJCgP78hQYYm0aq45VHUHCF2AoB19sHHOCCEsSXeilNoljEoh5HiKgRTuLwBl3korOVhtdmZD4oPhZFKRlAR00jMuS3kSB');
+
 const EXPIRES_SECONDS = 5;
 const YOUR_DOMAIN = SITE_ORIGIN
 export default async function createCheckoutSession(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method === 'POST') {
 		// Process a POST request
 		try {
+			const stripe = getServerSideStripe()
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 			const session = await stripe.checkout.sessions.create({
 				payment_method_types: ['card'],
