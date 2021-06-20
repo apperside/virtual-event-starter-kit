@@ -88,3 +88,7 @@ export async function getAllArtists(): Promise<Artist[]> {
 export async function getArtistInfo(id: number): Promise<Artist> {
   return seetingApi.getArtistInfo(id);
 }
+
+export async function getBookedEvents(id: number): Promise<Artist> {
+
+}

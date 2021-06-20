@@ -15,7 +15,7 @@ const getStripe = () => {
 export const getServerSideStripe = () => {
 	if (!serverSideStripe) {
 		//@ts-ignore
-		serverSideStripe = new ServerSideStripe('sk_test_51IdwlJCgP78hQYYm0aq45VHUHCF2AoB19sHHOCCEsSXeilNoljEoh5HiKgRTuLwBl3korOVhtdmZD4oPhZFKRlAR00jMuS3kSB')
+		serverSideStripe = new ServerSideStripe('sk_test_51IdwlJCgP78hQYYm0aq45VHUHCF2AoB19sHHOCCEsSXeilNoljEoh5HiKgRTuLwBl3korOVhtdmZD4oPhZFKRlAR00jMuS3kSB', { apiVersion: null })
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 	// const stripe = stripeLib('sk_test_51IdwlJCgP78hQYYm0aq45VHUHCF2AoB19sHHOCCEsSXeilNoljEoh5HiKgRTuLwBl3korOVhtdmZD4oPhZFKRlAR00jMuS3kSB');

@@ -16,30 +16,37 @@ const _StringUtils = require("typeorm/util/StringUtils");
 // node_modules/@next-auth/typeorm-legacy-adapter/dist/lib/naming-strategies.js
 class SnakeCaseNamingStrategy extends _typeorm.DefaultNamingStrategy {
 	tableName(className: any, customName: any) {
+		//@ts-ignore
 		return customName || (0, _StringUtils.snakeCase)(`${className}s`);
 	}
 
 	columnName(propertyName: any, customName: any, embeddedPrefixes: any[]) {
+		//@ts-ignore
 		return `${(0, _StringUtils.snakeCase)(embeddedPrefixes.join("_"))}${customName || (0, _StringUtils.snakeCase)(propertyName)}`;
 	}
 
 	relationName(propertyName: any) {
+		//@ts-ignore
 		return (0, _StringUtils.snakeCase)(propertyName);
 	}
 
 	joinColumnName(relationName: any, referencedColumnName: any) {
+		//@ts-ignore
 		return (0, _StringUtils.snakeCase)(`${relationName}_${referencedColumnName}`);
 	}
 
 	joinTableName(firstTableName: any, secondTableName: any, firstPropertyName: string, secondPropertyName: any) {
+		//@ts-ignore
 		return (0, _StringUtils.snakeCase)(`${firstTableName}_${firstPropertyName.replace(/\./gi, "_")}_${secondTableName}`);
 	}
 
 	joinTableColumnName(tableName: any, propertyName: any, columnName: any) {
+		//@ts-ignore
 		return (0, _StringUtils.snakeCase)(`${tableName}_${columnName || propertyName}`);
 	}
 
 	classTableInheritanceParentColumnName(parentTableName: any, parentTableIdPropertyName: any) {
+		//@ts-ignore
 		return (0, _StringUtils.snakeCase)(`${parentTableName}_${parentTableIdPropertyName}`);
 	}
 
@@ -61,11 +68,11 @@ const getConnection = async (name = "app") => {
 		connection = await createConnection({
 			name: name,
 			type: "mysql",
-			host: "localhost",
-			port: 3306,
-			username: "root",
-			password: "ciaociaociao",
-			database: "seeting_local",
+			host: process.env.DB_URL,
+			port: Number(process.env.DB_PORT),
+			username: process.env.DB_USER,
+			password: process.env.DB_PASSWORD,
+			database: process.env.DB_NAME,
 			entities: [new EntitySchema(UserSchema), EventEntity, BookingEntity],
 			namingStrategy: new SnakeCaseNamingStrategy() as any
 		});

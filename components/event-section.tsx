@@ -66,7 +66,6 @@ export default function SponsorSection({ event }: Props) {
       .then(function (result) {
         console.log("result is", result)
         if (result.clientSecret) {
-          alert("submit")
           getStripe()
             .then((stripe) => {
               console.log("has stripe", !!stripe)
