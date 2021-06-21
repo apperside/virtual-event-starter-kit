@@ -25,6 +25,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Loader from "./loader";
 import { StripeCardElement } from "@stripe/stripe-js";
 import { Stripe, loadStripe } from '@stripe/stripe-js'
+import { signIn, useSession } from "next-auth/client";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // import { loadStripe } from '@stripe/stripe-js';
@@ -54,8 +55,12 @@ const getStripe = () => {
 export default function SponsorSection({ event }: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const stripeCard = useRef<StripeCardElement>()
+  const [session, loading] = useSession()
   // console
   const pay = async () => {
+    if (!session) {
+      signIn()
+    }
     setIsLoading(true)
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
 
