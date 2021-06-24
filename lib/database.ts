@@ -81,9 +81,9 @@ const getConnection = async (name = "app") => {
 	return connection
 }
 type Models = "User" | "Events" | "Booking"
-const getModel = async (model: Models, connectionName: Connections = "app") => {
+const getModel = async <T = any>(model: Models, connectionName: Connections = "app") => {
 	const conn = await getConnection(connectionName);
-	return conn.getRepository(model)
+	return conn.getRepository<T>(model)
 }
 
 export const dbManager = { getConnection, getModel }
