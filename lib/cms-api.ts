@@ -23,13 +23,14 @@ import * as prismicApi from './cms-providers/prismic';
 import * as storyblokApi from './cms-providers/storyblok';
 import * as seetingApi from './cms-providers/seetingApi';
 
-let cmsApi: {
+interface ICMSApi {
   getAllSpeakers: () => Promise<Speaker[]>;
   getAllStages: () => Promise<Stage[]>;
   getAllSponsors: () => Promise<Sponsor[]>;
   getAllJobs: () => Promise<Job[]>;
   getAllEvents: () => Promise<Event[]>
-};
+}
+let cmsApi: ICMSApi
 
 if (process.env.DATOCMS_READ_ONLY_API_TOKEN) {
   cmsApi = datoCmsApi;
