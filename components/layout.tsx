@@ -24,6 +24,7 @@ import Logo from './icons/icon-logo';
 import MobileMenu from './mobile-menu';
 import Footer, { HostedByVercel } from './footer';
 import ViewSource from '@components/view-source';
+import { signIn, useSession } from "next-auth/client";
 
 type Props = {
   children: React.ReactNode;
@@ -35,7 +36,7 @@ type Props = {
 export default function Layout({ children, className, hideNav, layoutStyles }: Props) {
   const router = useRouter();
   const activeRoute = router.asPath;
-
+  const [session] = useSession()
   return (
     <>
       <ViewSource />
@@ -63,6 +64,15 @@ export default function Layout({ children, className, hideNav, layoutStyles }: P
                   </a>
                 </Link>
               ))}
+            </div>
+            <div>
+              {!session &&
+
+                <span onClick={() => signIn()} className="primary">LOGIN</span>
+              }
+              {!!session &&
+                <Link href="/api/auth/signout"><b><span style={{ cursor: "pointer", marginLeft: 32, color: "#0bb07a" }}>LOGOUT</span></b></Link>
+              }
             </div>
             {/* <div className={cn(styles['header-right'])}>
               <HostedByVercel />
