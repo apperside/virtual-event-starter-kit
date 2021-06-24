@@ -25,6 +25,7 @@ import MobileMenu from './mobile-menu';
 import Footer, { HostedByVercel } from './footer';
 import ViewSource from '@components/view-source';
 import { signIn, useSession } from "next-auth/client";
+import JSXStyle from 'styled-jsx/style'
 
 type Props = {
   children: React.ReactNode;
@@ -67,8 +68,16 @@ export default function Layout({ children, className, hideNav, layoutStyles }: P
             </div>
             <div>
               {!session &&
+                <>
 
-                <span onClick={() => signIn()} className="primary">LOGIN</span>
+                  {/* <style jsx>{`
+                  .logout {
+                    color: var(--primary);
+                  }
+                `}</style> */}
+                  <span className="logout" onClick={() => signIn()} >LOGIN</span>
+                  <JSXStyle id="123">{`span.logout {cursor:pointer;color: var(--primary);}`}</JSXStyle>
+                </>
               }
               {!!session &&
                 <Link href="/api/auth/signout"><b><span style={{ cursor: "pointer", marginLeft: 32, color: "#0bb07a" }}>LOGOUT</span></b></Link>
@@ -87,6 +96,7 @@ export default function Layout({ children, className, hideNav, layoutStyles }: P
           {!activeRoute.startsWith('/stage') && <Footer />}
         </div>
       </div>
+
     </>
   );
 }
