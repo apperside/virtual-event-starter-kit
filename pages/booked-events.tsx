@@ -53,15 +53,19 @@ export default function BookedEventsPage({ events }: Props) {
     </Page>
   );
 }
+
 BookedEventsPage.auth = true;
 export const getServerSideProps: GetStaticProps<Props> = async ({ req }: any) => {
   const session = await getSession({ req })
   console.log("server side session is", session)
 
-  const db_bookings = await dbManager.getModel("Booking");
+  let bookings: any[] = [];
+  if (session) {
+    const db_bookings = await dbManager.getModel("Booking");
 
-  const bookings = await db_bookings.find({ userId: session?.user?.userId })
-  console.log("bookings", bookings.length);
+    bookings = await db_bookings.find({ where: { userId: (session.user!).userId! } })
+    console.log("bookings", bookings.length);
+  }
 
   // let connection: Connection
   // try {
