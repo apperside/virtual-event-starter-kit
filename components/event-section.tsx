@@ -26,6 +26,7 @@ import Loader from "./loader";
 import { StripeCardElement } from "@stripe/stripe-js";
 import { Stripe, loadStripe } from '@stripe/stripe-js'
 import { signIn, useSession } from "next-auth/client";
+import { getClientSideStripe } from "@lib/stripe";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // import { loadStripe } from '@stripe/stripe-js';
@@ -45,58 +46,65 @@ type Props = {
 let stripePromise: Promise<Stripe | null>
 
 //@ts-ignore
-const getStripe = () => {
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  if (!stripePromise) {
-    stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);//"pk_test_51IdwlJCgP78hQYYmKOkQb91h1gM6VNDgrXrYbcpDUGGt3F5JWSBRYhajmoJaQg1suf8DNPNVQRZzviMpkMKhJ1H4006PUY8hcC")
-  }
-  return stripePromise
-}
+// const getStripe = () => {
+//   // eslint-disable-next-line @typescript-eslint/no-misused-promises
+//   if (!stripePromise) {
+//     stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);//"pk_test_51IdwlJCgP78hQYYmKOkQb91h1gM6VNDgrXrYbcpDUGGt3F5JWSBRYhajmoJaQg1suf8DNPNVQRZzviMpkMKhJ1H4006PUY8hcC")
+//   }
+//   return stripePromise
+// }
 export default function SponsorSection({ event }: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const stripeCard = useRef<StripeCardElement>()
   const [session, loading] = useSession()
+  const [isFormComplete, setIsFormComplete] = useState(false)
   // console
   const pay = async () => {
     if (!session) {
-      signIn()
-    }
-    setIsLoading(true)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-
-    const createPaymentIntentResponse = await fetch("/api/payments/init", {
-      method: "POST",
-
-      body: JSON.stringify({
-        eventId: event.id
-      })
-    });
-    const paymentIntent = await createPaymentIntentResponse.json();
-    console.log("result is", paymentIntent)
-    if (paymentIntent.clientSecret) {
-      const stripe = await getStripe();
-      console.log("has stripe", !!stripe)
-      try {
-        const confirmResult = await stripe?.confirmCardPayment(paymentIntent.clientSecret, {
-          payment_method: {
-            card: stripeCard.current!,
-            billing_details: {
-              name: 'Jenny Rosen'
-            }
-          },
-          setup_future_usage: 'off_session'
-        });
-        alert("ok")
-      } catch (err) {
-        alert("error")
-      }
-      finally {
-        setIsLoading(false)
-      }
+      await signIn()
     }
     else {
-      setIsLoading(false)
-      alert("error")
+      if (!isFormComplete) {
+        alert("Inserire i dati");
+        return
+      }
+      setIsLoading(true)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
+      const createPaymentIntentResponse = await fetch("/api/payments/init", {
+        method: "POST",
+
+        body: JSON.stringify({
+          eventId: event.id
+        })
+      });
+      const paymentIntent = await createPaymentIntentResponse.json();
+      console.log("result is", paymentIntent)
+      if (paymentIntent.clientSecret) {
+        const stripe = await getClientSideStripe();
+        console.log("has stripe", !!stripe)
+        try {
+          const confirmResult = await stripe?.confirmCardPayment(paymentIntent.clientSecret, {
+            payment_method: {
+              card: stripeCard.current!,
+              billing_details: {
+                name: 'Jenny Rosen'
+              }
+            },
+            setup_future_usage: 'off_session'
+          });
+          alert("ok")
+        } catch (err) {
+          alert("error")
+        }
+        finally {
+          setIsLoading(false)
+        }
+      }
+      else {
+        setIsLoading(false)
+        alert("error")
+      }
     }
   }
 
@@ -104,7 +112,7 @@ export default function SponsorSection({ event }: Props) {
     console.log(process.env)
 
     const init = async () => {
-      const stripe = await getStripe()
+      const stripe = await getClientSideStripe()
 
       if (stripe) {
         const elements = stripe.elements();
@@ -136,6 +144,10 @@ export default function SponsorSection({ event }: Props) {
             },
           }
         });
+        card.on("change", (event) => {
+          setIsFormComplete(event.complete)
+          console.log(event.complete)
+        })
         stripeCard.current = card;
         card.on('change', function (event) {
           const displayError = document.getElementById('card-errors');
