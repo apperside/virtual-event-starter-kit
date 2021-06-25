@@ -14,31 +14,31 @@ import { Event } from "./Event";
 @Entity("Vouchers", { schema: "test_generation" })
 export class Vouchers {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
-  id!: number;
+  public id!: number;
 
   @Column("varchar", { name: "value", nullable: true, length: 256 })
-  value!: string | null;
+  public value!: string | null;
 
   @Column("int", { name: "event_id", nullable: true })
-  eventId!: number | null;
+  public eventId!: number | null;
 
   @Column("timestamp", { name: "used_time", nullable: true })
-  usedTime!: Date | null;
+  public usedTime!: Date | null;
 
   @Column("int", { name: "used_by", nullable: true })
-  usedBy!: number | null;
+  public usedBy!: number | null;
 
   @ManyToOne("TheUser", "vouchers", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "used_by", referencedColumnName: "id" }])
-  usedBy2!: User;
+  public usedBy2!: User;
 
-  @ManyToOne("MyEvent", "vouchers", {
+  @ManyToOne("Event", "vouchers", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "event_id", referencedColumnName: "id" }])
-  event!: Event;
+  public event!: Event;
 }

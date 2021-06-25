@@ -14,33 +14,34 @@ import { EventArtists } from "./EventArtists";
 @Entity("Artist", { schema: "test_generation" })
 export class Artist {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
-  id!: number;
+  public id!: number;
 
   @Column("varchar", { name: "full_name", nullable: true, length: 256 })
-  fullName!: string | null;
+  public fullName!: string | null;
 
   @Column("varchar", { name: "password", nullable: true, length: 256 })
-  password!: string | null;
+  public password!: string | null;
 
   @Column("int", { name: "rights_level", nullable: true })
-  rightsLevel!: number | null;
+  public rightsLevel!: number | null;
 
   @Column("int", { name: "genre", nullable: true })
-  genre!: number | null;
+  public genre!: number | null;
 
   @Column("int", { name: "last_login", nullable: true })
-  lastLogin!: number | null;
+  public lastLogin!: number | null;
 
   @Column("varchar", { name: "spotify_playlist", nullable: true, length: 256 })
-  spotifyPlaylist!: string | null;
+  public spotifyPlaylist!: string | null;
 
   @ManyToOne("Genre", "artists", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
+    cascade: ["insert"]
   })
-  @JoinColumn([{ name: "genre", referencedColumnName: "id" }])
-  genre2!: Genre;
+  @JoinColumn([{ name: "genre", referencedColumnName: "id", }])
+  public genre2!: Genre;
 
   @OneToMany("Event_artists", "artist")
-  eventArtists!: EventArtists[];
+  public eventArtists!: EventArtists[];
 }

@@ -27,6 +27,7 @@ import { StripeCardElement } from "@stripe/stripe-js";
 import { Stripe, loadStripe } from '@stripe/stripe-js'
 import { signIn, useSession } from "next-auth/client";
 import { getClientSideStripe } from "@lib/stripe";
+import { Vouchers } from "entities/Vouchers";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // import { loadStripe } from '@stripe/stripe-js';
@@ -58,8 +59,10 @@ export default function SponsorSection({ event }: Props) {
   const stripeCard = useRef<StripeCardElement>()
   const [session, loading] = useSession()
   const [isFormComplete, setIsFormComplete] = useState(false)
+
   // console
   const pay = async () => {
+
     if (!session) {
       await signIn()
     }

@@ -11,31 +11,31 @@ import { User } from "./User";
 
 @Index("event_id", ["eventId"], {})
 @Index("user_id", ["userId"], {})
-@Entity("Booking", { schema: "test_generation" })
+@Entity("Bookings", { schema: "test_generation" })
 export class Bookings {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
-  id!: number;
+  public id!: number;
 
   @Column("int", { name: "user_id", nullable: true })
-  userId!: number | null;
+  public userId!: number | null;
 
   @Column("int", { name: "event_id", nullable: true })
-  eventId!: number | null;
+  public eventId!: number | null;
 
   @Column("timestamp", { name: "booked_date", nullable: true })
-  bookedDate!: Date | null;
+  public bookedDate!: Date | null;
 
   @ManyToOne("Event", "bookings", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "event_id", referencedColumnName: "id" }])
-  event!: Event;
+  public event!: Event;
 
   @ManyToOne("TheUser", "bookings", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user!: User;
+  public user!: User;
 }

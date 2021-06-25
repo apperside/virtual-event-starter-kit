@@ -5,14 +5,14 @@ import { Event } from "./Event";
 @Entity("Genre", { schema: "test_generation" })
 export class Genre {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
-  id!: number;
+  public id!: number;
 
   @Column("varchar", { name: "value", nullable: true, length: 256 })
-  value!: string | null;
+  public value!: string | null;
 
   @OneToMany("Artist", "genre2")
-  artists!: Artist[];
+  public artists!: Artist[];
 
   @OneToMany("Event", "genre")
-  events!: Event[];
+  public events!: Event[];
 }

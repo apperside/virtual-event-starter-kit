@@ -12,24 +12,24 @@ import { User } from "./User";
 @Entity("Transactions", { schema: "test_generation" })
 export class Transactions {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
-  id!: number;
+  public id!: number;
 
   @Column("int", { name: "amount", nullable: true })
-  amount!: number | null;
+  public amount!: number | null;
 
   @Column("varchar", { name: "sku", nullable: true, length: 256 })
-  sku!: string | null;
+  public sku!: string | null;
 
   @Column("timestamp", { name: "tx_date", nullable: true })
-  txDate!: Date | null;
+  public txDate!: Date | null;
 
   @Column("int", { name: "user_id", nullable: true })
-  userId!: number | null;
+  public userId!: number | null;
 
-  @ManyToOne(() => User, (user) => user.transactions, {
+  @ManyToOne("TheUser", "transactions", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user!: User;
+  public user!: User;
 }

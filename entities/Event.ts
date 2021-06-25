@@ -14,57 +14,57 @@ import { Rooms } from "./Rooms";
 import { Vouchers } from "./Vouchers";
 
 @Index("genre_id", ["genreId"], {})
-@Entity("MyEvent", { schema: "test_generation" })
+@Entity("Event", { schema: "test_generation" })
 export class Event {
   @Column("int", { primary: true, name: "id" })
-  id!: number;
+  public id!: number;
 
   @Column("varchar", { name: "title", nullable: true, length: 256 })
-  title!: string | null;
+  public title!: string | null;
 
   @Column("varchar", { name: "description", nullable: true, length: 256 })
-  description!: string | null;
+  public description!: string | null;
 
   @Column("datetime", { name: "date", nullable: true })
-  date!: Date | null;
+  public date!: Date | null;
 
   @Column("int", { name: "start_ticket_opening", nullable: true })
-  startTicketOpening!: number | null;
+  public startTicketOpening!: number | null;
 
   @Column("int", { name: "available_tickets", nullable: true })
-  availableTickets!: number | null;
+  public availableTickets!: number | null;
 
   @Column("int", { name: "duration", nullable: true })
-  duration!: number | null;
+  public duration!: number | null;
 
   @Column("decimal", { name: "price", nullable: true, precision: 10, scale: 0 })
-  price!: string | null;
+  public price!: string | null;
 
   @Column("varchar", { name: "type", nullable: true, length: 256 })
-  type!: string | null;
+  public type!: string | null;
 
   @Column("int", { name: "genre_id", nullable: true })
-  genreId!: number | null;
+  public genreId!: number | null;
 
   @OneToMany("Bookings", "event")
-  bookings!: Bookings[];
+  public bookings!: Bookings[];
 
-  @ManyToOne(() => Genre, (genre) => genre.events, {
+  @ManyToOne("Genre", "events", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "genre_id", referencedColumnName: "id" }])
-  genre!: Genre;
+  public genre!: Genre;
 
   @OneToMany("Event_artists", "event")
-  eventArtists!: EventArtists[];
+  public eventArtists!: EventArtists[];
 
   @OneToMany("Images", "event")
-  images!: Images[];
+  public images!: Images[];
 
   @OneToMany("Rooms", "event")
-  rooms!: Rooms[];
+  public rooms!: Rooms[];
 
   @OneToMany("Vouchers", "event")
-  vouchers!: Vouchers[];
+  public vouchers!: Vouchers[];
 }

@@ -7,29 +7,29 @@ import { Vouchers } from "./Vouchers";
 @Entity("TheUser", { schema: "test_generation" })
 export class User {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
-  id!: number;
+  public id!: number;
 
   @Column("varchar", { name: "spotify_id", nullable: true, length: 256 })
-  spotifyId!: string | null;
+  public spotifyId!: string | null;
 
   @Column("varchar", { name: "email", nullable: true, length: 256 })
-  email!: string | null;
+  public email!: string | null;
 
   @Column("timestamp", { name: "signup_date", nullable: true })
-  signupDate!: Date | null;
+  public signupDate!: Date | null;
 
   @Column("int", { name: "balance", nullable: true })
-  balance!: number | null;
+  public balance!: number | null;
 
   @OneToMany("Bookings", "user")
-  bookings!: Bookings[];
+  public bookings!: Bookings[];
 
   @OneToMany("Rooms", "user")
-  rooms!: Rooms[];
+  public rooms!: Rooms[];
 
   @OneToMany("Transactions", "user")
-  transactions!: Transactions[];
+  public transactions!: Transactions[];
 
   @OneToMany("Vouchers", "usedBy2")
-  vouchers!: Vouchers[];
+  public vouchers!: Vouchers[];
 }

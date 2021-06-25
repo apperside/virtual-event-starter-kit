@@ -12,18 +12,18 @@ import { Event } from "./Event";
 @Entity("Images", { schema: "test_generation" })
 export class Images {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
-  id!: number;
+  public id!: number;
 
   @Column("int", { name: "event_id", nullable: true })
-  eventId!: number | null;
+  public eventId!: number | null;
 
   @Column("varchar", { name: "filename", nullable: true, length: 256 })
-  filename!: string | null;
+  public filename!: string | null;
 
-  @ManyToOne(() => Event, (event) => event.images, {
+  @ManyToOne("Event", "images", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "event_id", referencedColumnName: "id" }])
-  event!: Event;
+  public event!: Event;
 }

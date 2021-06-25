@@ -4,6 +4,7 @@ import entities from "../entities/index";
 import { Vouchers } from "entities/Vouchers";
 import User from "models/User";
 import { Connection, createConnection, getConnectionManager } from 'typeorm';
+import { SnakeCaseNamingStrategy } from "./db/namingStrategies";
 
 let connection: Connection
 const _typeorm = require("typeorm");
@@ -11,47 +12,7 @@ const _StringUtils = require("typeorm/util/StringUtils");
 
 // we have to use the same NamingStrategy as next-auth
 // node_modules/@next-auth/typeorm-legacy-adapter/dist/lib/naming-strategies.js
-class SnakeCaseNamingStrategy extends _typeorm.DefaultNamingStrategy {
-	tableName(className: any, customName: any) {
-		//@ts-ignore
-		return customName || (0, _StringUtils.snakeCase)(`${className}s`);
-	}
 
-	columnName(propertyName: any, customName: any, embeddedPrefixes: any[]) {
-		//@ts-ignore
-		return `${(0, _StringUtils.snakeCase)(embeddedPrefixes.join("_"))}${customName || (0, _StringUtils.snakeCase)(propertyName)}`;
-	}
-
-	relationName(propertyName: any) {
-		//@ts-ignore
-		return (0, _StringUtils.snakeCase)(propertyName);
-	}
-
-	joinColumnName(relationName: any, referencedColumnName: any) {
-		//@ts-ignore
-		return (0, _StringUtils.snakeCase)(`${relationName}_${referencedColumnName}`);
-	}
-
-	joinTableName(firstTableName: any, secondTableName: any, firstPropertyName: string, secondPropertyName: any) {
-		//@ts-ignore
-		return (0, _StringUtils.snakeCase)(`${firstTableName}_${firstPropertyName.replace(/\./gi, "_")}_${secondTableName}`);
-	}
-
-	joinTableColumnName(tableName: any, propertyName: any, columnName: any) {
-		//@ts-ignore
-		return (0, _StringUtils.snakeCase)(`${tableName}_${columnName || propertyName}`);
-	}
-
-	classTableInheritanceParentColumnName(parentTableName: any, parentTableIdPropertyName: any) {
-		//@ts-ignore
-		return (0, _StringUtils.snakeCase)(`${parentTableName}_${parentTableIdPropertyName}`);
-	}
-
-	eagerJoinRelationAlias(alias: any, propertyPath: string) {
-		return `${alias}__${propertyPath.replace(".", "_")}`;
-	}
-
-}
 
 type Connections = "app" | "nextauth"
 const getConnection = async (name = "app") => {
