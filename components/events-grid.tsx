@@ -49,6 +49,10 @@ function EventCard({ event }: { event: Event }) {
             <h2 className={styles.name}>{event.artists[0].name}</h2>
             <p className={styles.description}>{event.description}</p>
           </div>
+          <div style={{ justifyContent: "flex-end", display: "flex" }}>
+            <b><span className="text-primary">{Number(event.price).toFixed(2)}€</span></b>
+
+          </div>
         </div>
       </a>
     </Link>

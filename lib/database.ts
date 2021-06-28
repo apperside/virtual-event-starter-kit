@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import entities from "../entities/index";
-import { Vouchers } from "entities/Vouchers";
-import User from "models/User";
 import { Connection, createConnection, getConnectionManager } from 'typeorm';
+import entities from "../entities/index";
 import { SnakeCaseNamingStrategy } from "./db/namingStrategies";
 
 let connection: Connection
@@ -39,16 +37,16 @@ const getConnection = async (name = "app") => {
 			});
 			await connection.synchronize()
 		} catch (err) {
-			console.error("error creating connection")
+			console.error("error creating connection", err)
 			throw err;
 		}
 	}
 	return connection
 }
-type Models = "User" | "Events" | "Booking"
-const getModel = async <T = any>(model: Models, connectionName: Connections = "app") => {
+type Models = "users" | "events" | "bookings"
+const getRepository = async <T = any>(model: Models, connectionName: Connections = "app") => {
 	const conn = await getConnection(connectionName);
 	return conn.getRepository<T>(model)
 }
 
-export const dbManager = { getConnection, getModel }
+export const dbManager = { getConnection, getRepository }

@@ -126,6 +126,7 @@ export default function SponsorSection({ event }: Props) {
         };
 
         const card = elements.create("card", {
+          hidePostalCode: true,
           style: {
             base: {
               iconColor: 'white',
@@ -236,7 +237,7 @@ export default function SponsorSection({ event }: Props) {
               {!!isLoading &&
                 <Loader />
               }
-              {!isLoading && "ACQUISTA"
+              {!isLoading && "ACQUISTA - " + (Number(event.price).toFixed(2)) + "€"
               }
             </button>
             <a

@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Artist } from "./Artist";
 import { Event } from "./Event";
 
-@Entity("Genre", { schema: "test_generation" })
+@Entity("genres", { schema: "test_generation" })
 export class Genre {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   public id!: number;
@@ -13,6 +13,6 @@ export class Genre {
   @OneToMany("Artist", "genre2")
   public artists!: Artist[];
 
-  @OneToMany("Event", "genre")
+  @OneToMany("events", "genre")
   public events!: Event[];
 }

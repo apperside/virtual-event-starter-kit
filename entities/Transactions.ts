@@ -9,7 +9,7 @@ import {
 import { User } from "./User";
 
 @Index("user_id", ["userId"], {})
-@Entity("Transactions", { schema: "test_generation" })
+@Entity("transactions", { schema: "test_generation" })
 export class Transactions {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   public id!: number;
@@ -26,7 +26,7 @@ export class Transactions {
   @Column("int", { name: "user_id", nullable: true })
   public userId!: number | null;
 
-  @ManyToOne("TheUser", "transactions", {
+  @ManyToOne("users", "transactions", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })

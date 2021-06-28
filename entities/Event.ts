@@ -6,7 +6,7 @@ import {
   ManyToOne,
   OneToMany,
 } from "typeorm";
-import { Bookings } from "./Bookings";
+import { Booking } from "./Bookings";
 import { Genre } from "./Genre";
 import { EventArtists } from "./EventArtists";
 import { Images } from "./Images";
@@ -14,7 +14,7 @@ import { Rooms } from "./Rooms";
 import { Vouchers } from "./Vouchers";
 
 @Index("genre_id", ["genreId"], {})
-@Entity("Event", { schema: "test_generation" })
+@Entity("events", { schema: "test_generation" })
 export class Event {
   @Column("int", { primary: true, name: "id" })
   public id!: number;
@@ -46,25 +46,25 @@ export class Event {
   @Column("int", { name: "genre_id", nullable: true })
   public genreId!: number | null;
 
-  @OneToMany("Bookings", "event")
-  public bookings!: Bookings[];
+  @OneToMany("bookings", "event")
+  public bookings!: Booking[];
 
-  @ManyToOne("Genre", "events", {
+  @ManyToOne("genres", "events", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "genre_id", referencedColumnName: "id" }])
   public genre!: Genre;
 
-  @OneToMany("Event_artists", "event")
+  @OneToMany("event_artists", "event")
   public eventArtists!: EventArtists[];
 
-  @OneToMany("Images", "event")
+  @OneToMany("images", "event")
   public images!: Images[];
 
-  @OneToMany("Rooms", "event")
+  @OneToMany("rooms", "event")
   public rooms!: Rooms[];
 
-  @OneToMany("Vouchers", "event")
+  @OneToMany("vouchers", "event")
   public vouchers!: Vouchers[];
 }

@@ -1,35 +1,35 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Bookings } from "./Bookings";
+import { Booking } from "./Bookings";
 import { Rooms } from "./Rooms";
 import { Transactions } from "./Transactions";
 import { Vouchers } from "./Vouchers";
 
-@Entity("TheUser", { schema: "test_generation" })
+@Entity("users", { schema: "test_generation" })
 export class User {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   public id!: number;
 
-  @Column("varchar", { name: "spotify_id", nullable: true, length: 256 })
-  public spotifyId!: string | null;
+  @Column("varchar", { name: "name", nullable: true, length: 256 })
+  public name!: string | null;
 
   @Column("varchar", { name: "email", nullable: true, length: 256 })
   public email!: string | null;
 
-  @Column("timestamp", { name: "signup_date", nullable: true })
-  public signupDate!: Date | null;
+  @Column("boolean", { name: "email_verified", nullable: true })
+  public emailVerified!: boolean
 
-  @Column("int", { name: "balance", nullable: true })
-  public balance!: number | null;
+  @Column("varchar", { name: "image", nullable: true, length: 256 })
+  public image!: string | null;
 
-  @OneToMany("Bookings", "user")
-  public bookings!: Bookings[];
+  @Column("timestamp", { name: "created_at", nullable: true })
+  public createdAt!: number | null;
 
-  @OneToMany("Rooms", "user")
-  public rooms!: Rooms[];
+  @Column("timestamp", { name: "updated_at", nullable: true })
+  public updatedAt!: number | null;
 
-  @OneToMany("Transactions", "user")
-  public transactions!: Transactions[];
+  @Column("varchar", { name: "phone_number", nullable: true, length: 256 })
+  public phoneNumber!: string | null;
 
-  @OneToMany("Vouchers", "usedBy2")
-  public vouchers!: Vouchers[];
+  @Column("varchar", { name: "stripe_customer_id", nullable: true, length: 256 })
+  public stripeCustomerId!: string | null;
 }

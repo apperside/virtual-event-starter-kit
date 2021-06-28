@@ -11,7 +11,7 @@ import { Artist } from "./Artist";
 
 @Index("event_id", ["eventId"], {})
 @Index("artist_id", ["artistId"], {})
-@Entity("Event_artists", { schema: "test_generation" })
+@Entity("event_artists", { schema: "test_generation" })
 export class EventArtists {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   public id!: number;
@@ -22,14 +22,14 @@ export class EventArtists {
   @Column("int", { name: "artist_id", nullable: true })
   public artistId!: number | null;
 
-  @ManyToOne("Event", "eventArtists", {
+  @ManyToOne("events", "eventArtists", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "event_id", referencedColumnName: "id" }])
   public event!: Event;
 
-  @ManyToOne("Artist", "eventArtists", {
+  @ManyToOne("artists", "eventArtists", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })

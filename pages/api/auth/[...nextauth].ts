@@ -1,7 +1,8 @@
 import { authEvents } from "@lib/auth"
-import Models from "models"
-import { EventEntity, EventSchema } from "models/Event"
+// import Models from "models"
+// import { EventEntity, EventSchema } from "models/Event"
 import NextAuth, { Session, User } from 'next-auth'
+import Models from "next-auth-models"
 import Adapters from "next-auth/adapters"
 import { JWT, DefaultJWT } from "next-auth/jwt"
 import Providers from 'next-auth/providers'
@@ -87,7 +88,8 @@ export default NextAuth({
 	],
 	adapter: Adapters.TypeORM.Adapter(
 		// The first argument should be a database connection string or TypeORM config object
-		"mysql://root:ciaociaociao@127.0.0.1:3306/seeting_local",
+		// "mysql://root:ciaociaociao@127.0.0.1:3306/seeting_local",
+		`mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_URL}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
 		// The second argument can be used to pass custom models and schemas
 		{
 			models: {
@@ -95,11 +97,6 @@ export default NextAuth({
 				Account: Adapters.TypeORM.Models.Account,
 				Session: Adapters.TypeORM.Models.Session,
 				VerificationRequest: Adapters.TypeORM.Models.VerificationRequest,
-				//@ts-ignore
-				Events: {
-					schema: EventSchema,
-					model: EventEntity
-				}
 				// Event: Models.Events
 			},
 		}

@@ -1,8 +1,10 @@
-import { getConnectionManager } from 'typeorm';
 import { dbManager } from '@lib/database';
-import { getServerSideStripe } from './../../../../lib/stripe';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { Booking } from "entities/Bookings";
 import { buffer } from "micro";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getConnectionManager } from 'typeorm';
+import { getServerSideStripe } from 'lib/stripe';
+import * as securePin from "secure-pin";
 export const config = {
 	api: {
 		bodyParser: false,
@@ -24,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 			try {
 				// event = stripe.webhooks.constructEvent(payload, sig!, "whsec_1CpuhvDY5tqEHU0WqvPSCgXEg6mSCCM0");
-				event = stripe.webhooks.constructEvent(buf, sig!, process.env.STRIPE_WEBOOK_SECRET!);
+				event = stripe.webhooks.constructEvent(buf, sig!, process.env.STRIPE_WEBHOOK_SECRET!);
 				console.log("stripe signature callback verified", event)
 			} catch (err) {
 				return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -32,39 +34,50 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 
 
-			const eventData = JSON.parse(buf);
+			const callbackData = JSON.parse(buf);
 
 			// Handle the event
-			switch (eventData.type) {
+			switch (callbackData.type) {
 				case 'payment_intent.succeeded':
 				case "checkout.session.completed":
-					const paymentIntent = eventData.data.object;
+					const paymentIntent = callbackData.data.object;
 					console.log('PaymentIntent was successful!');
 
-					const metadata: any | undefined = eventData.data.object.metadata;
+					const metadata: any | undefined = callbackData.data.object.metadata;
 					console.log("metadata", metadata)
-					const eventId = metadata.eventId;
-					const conns = getConnectionManager().connections;
-					const users = await dbManager.getModel("User");
-					const user = await users.findOne({ where: { stripeCustomerId: eventData.data.object.customer } }) as any
+					const seetingEventId = metadata.eventId;
+
+					const usersRepo = await dbManager.getRepository("users");
+					const user = await usersRepo.findOne({ where: { stripeCustomerId: callbackData.data.object.customer } })
 					if (user) {
-						const bookings = await dbManager.getModel("Booking");
-						const bookingByPaymentId = await bookings.findOne({ paymentId: eventData.data.object.id })
+						const bookingsRepo = await dbManager.getRepository<Booking>("bookings");
+						const bookingByPaymentId = await bookingsRepo.findOne({ paymentId: callbackData.data.object.id })
 						if (!bookingByPaymentId) {
-							const createResult = await bookings.save({ userId: user?.id, eventId, paymentType: "stripe", paymentId: eventData.data.object.id });
+							const pinCode = securePin.generatePinSync(6)
+							const booking: Partial<Booking> = {
+								userId: user.id,
+								eventId: Number(seetingEventId),
+								paymentType: "stripe",
+								paymentId: callbackData.data.object.id,
+								pinCode,
+								bookedDate: new Date()
+							}
+							// const createResult = await bookings.save({ userId: user?.id, eventId: Number(seetingEventId), paymentType: "stripe", paymentId: callbackData.data.object.id });
+							const createResult = await bookingsRepo.save(booking);
+							console.log("created", createResult)
 						}
 					}
 
-					res.status(200);
+					res.status(200).json({ result: true });
 
 					break;
 				case 'payment_method.attached':
-					const paymentMethod = eventData.data.object;
+					const paymentMethod = callbackData.data.object;
 					console.log('PaymentMethod was attached to a Customer!');
 					break;
 				// ... handle other event types
 				default:
-					return res.status(200).send(`Unhandled event type ${eventData.type}`)
+					return res.status(200).send(`Unhandled event type ${callbackData.type}`)
 			}
 		} catch (err) {
 			console.error("error in request", err);
@@ -77,4 +90,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		res.status(304).send({})
 	}
 }
+
 

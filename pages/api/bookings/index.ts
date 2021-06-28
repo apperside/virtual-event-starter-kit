@@ -11,7 +11,7 @@ import { SITE_ORIGIN } from "@lib/constants";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method === 'GET') {
-		const db_bookings = await dbManager.getModel("Booking");
+		const db_bookings = await dbManager.getRepository("bookings");
 		const session = await getSession({ req });
 		const bookings = await db_bookings.find({ userId: session?.user?.userId })
 		console.log("bookings", bookings.length);

@@ -61,7 +61,7 @@ export const getServerSideProps: GetStaticProps<Props> = async ({ req }: any) =>
 
   let bookings: any[] = [];
   if (session) {
-    const db_bookings = await dbManager.getModel("Booking");
+    const db_bookings = await dbManager.getRepository("bookings");
 
     bookings = await db_bookings.find({ where: { userId: (session.user!).userId! } })
     console.log("bookings", bookings.length);

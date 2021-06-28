@@ -9,7 +9,7 @@ import {
 import { Event } from "./Event";
 
 @Index("event_id", ["eventId"], {})
-@Entity("Images", { schema: "test_generation" })
+@Entity("images", { schema: "test_generation" })
 export class Images {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   public id!: number;
@@ -20,7 +20,7 @@ export class Images {
   @Column("varchar", { name: "filename", nullable: true, length: 256 })
   public filename!: string | null;
 
-  @ManyToOne("Event", "images", {
+  @ManyToOne("events", "images", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })

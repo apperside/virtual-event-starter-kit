@@ -156,6 +156,7 @@ a[role="button"] {
   transition-property: all;
   transition-timing-function: ease-in-out;
   width: 300px;
+  cursor: pointer;
 }
 svg {
   shape-rendering: crispEdges;
@@ -185,4 +186,8 @@ svg circle {
   width: auto;
   height: auto;
   clip: auto;
+}
+
+.text-primary {
+  color: var(--primary);
 }

@@ -11,7 +11,7 @@ import { Genre } from "./Genre";
 import { EventArtists } from "./EventArtists";
 
 @Index("genre", ["genre"], {})
-@Entity("Artist", { schema: "test_generation" })
+@Entity("artists", { schema: "test_generation" })
 export class Artist {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   public id!: number;
@@ -34,7 +34,7 @@ export class Artist {
   @Column("varchar", { name: "spotify_playlist", nullable: true, length: 256 })
   public spotifyPlaylist!: string | null;
 
-  @ManyToOne("Genre", "artists", {
+  @ManyToOne("genres", "artists", {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
     cascade: ["insert"]
@@ -42,6 +42,6 @@ export class Artist {
   @JoinColumn([{ name: "genre", referencedColumnName: "id", }])
   public genre2!: Genre;
 
-  @OneToMany("Event_artists", "artist")
+  @OneToMany("event_artists", "artist")
   public eventArtists!: EventArtists[];
 }

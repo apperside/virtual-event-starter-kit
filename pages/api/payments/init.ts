@@ -1,3 +1,4 @@
+import { authHelper } from './../../../lib/auth';
 import { getServerSideStripe } from './../../../lib/stripe';
 import { getSession } from 'next-auth/client';
 /**
@@ -21,6 +22,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getAllStages, getEventDetails } from '@lib/cms-api';
 import { SITE_ORIGIN } from "@lib/constants";
 import { dbManager } from "@lib/database";
+import { User } from "entities/User";
 // Number of seconds to cache the API response for
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -30,73 +32,93 @@ const EXPIRES_SECONDS = 5;
 const YOUR_DOMAIN = SITE_ORIGIN
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method === 'POST') {
-		const eventId = JSON.parse(req.body).eventId;
-		const paymentMethodId = JSON.parse(req.body).paymentMethodId;
-		const eventDetail = await getEventDetails(eventId);
+		try {
+			const eventId = JSON.parse(req.body).eventId;
+			const paymentMethodId = JSON.parse(req.body).paymentMethodId;
+			const eventDetail = await getEventDetails(eventId);
 
-		const session = await getSession({ req });
-		const users = await dbManager.getModel("User");
-		const user = await users.findOne(session?.user?.userId) as any;
-		console.log("user.stripeCustomerId", user?.stripeCustomerId);
+			const session = await authHelper.checkSession(req);
+
+			const usersRepository = await dbManager.getRepository<User>("users");
+			const user = await usersRepository.findOne(session.user.userId)!;
+
+			if (user) {
+				const stripe = getServerSideStripe();
+
+				if (!user?.stripeCustomerId) {
+					const stripeCustomer = await stripe.customers.create({ email: session.user.email ?? "" });
+					if (!stripeCustomer?.id) {
+						return res.status(500).send({ error: "cannont create stripe customer" })
+					}
+					console.log("user.stripeCustomerId", user?.stripeCustomerId);
+					user.stripeCustomerId = stripeCustomer.id;
+					await usersRepository.save(user)
+					// const updateResult = await usersRepository.update({ id: user.id }, { stripeCustomerId: stripeCustomer.id });
+				}
 
 
-		const stripe = getServerSideStripe();
 
-		const paymentMethods = await stripe.paymentMethods.list({
-			customer: user?.stripeCustomerId,
-			type: 'card',
-		});
+				// const paymentMethods = await stripe.paymentMethods.list({
+				// 	customer: user?.stripeCustomerId,
+				// 	type: 'card',
+				// });
 
-		console.log("payment methods", paymentMethods)
-		const paymentIntent = await stripe.paymentIntents.create({
-			amount: Number(eventDetail.price) * 100,
-			currency: 'eur',
-			// payment_method: paymentMethodId,
-			customer: user?.stripeCustomerId,
-			// confirmation_method: 'manual',
-			// confirm: true,
-			metadata: {
-				eventId: eventId
+				// console.log("payment methods", paymentMethods)
+				const paymentIntent = await stripe.paymentIntents.create({
+					amount: Number(eventDetail.price) * 100,
+					currency: 'eur',
+					payment_method: paymentMethodId,
+					customer: user?.stripeCustomerId,
+					// confirmation_method: 'manual',
+					// confirm: true,
+					metadata: {
+						eventId: eventId
+					}
+					// setup_future_usage: 'on_session'
+				});
+
+				return res.json({ clientSecret: paymentIntent.client_secret })
+				// Process a POST request
+				// try {
+				// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+				// 	const session = await stripe.checkout.sessions.create({
+				// 		payment_method_types: ['card'],
+				// 		line_items: [
+				// 			{
+				// 				price_data: {
+				// 					currency: 'usd',
+				// 					product_data: {
+				// 						name: 'Stubborn Attachments',
+				// 						images: ['https://i.imgur.com/EHyR2nP.png'],
+				// 					},
+				// 					unit_amount: 2000,
+				// 				},
+				// 				quantity: 1,
+				// 			},
+				// 		],
+				// 		mode: 'payment',
+				// 		success_url: `${YOUR_DOMAIN}/purchase-success`,
+				// 		cancel_url: `${YOUR_DOMAIN}/purchase-cancel`,
+				// 	});
+
+				// 	res.status(200).json({ id: session.id })
+				// } catch (e) {
+				// 	// eslint-disable-next-line no-console
+				// 	console.log(e);
+
+				// 	return res.status(500).json({
+				// 		error: {
+				// 			code: 'server_error',
+				// 			message: 'Internal server error'
+				// 		}
+				// 	});
+				// }
 			}
-			// setup_future_usage: 'on_session'
-		});
-
-		res.json({ clientSecret: paymentIntent.client_secret })
-		// Process a POST request
-		// try {
-		// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-		// 	const session = await stripe.checkout.sessions.create({
-		// 		payment_method_types: ['card'],
-		// 		line_items: [
-		// 			{
-		// 				price_data: {
-		// 					currency: 'usd',
-		// 					product_data: {
-		// 						name: 'Stubborn Attachments',
-		// 						images: ['https://i.imgur.com/EHyR2nP.png'],
-		// 					},
-		// 					unit_amount: 2000,
-		// 				},
-		// 				quantity: 1,
-		// 			},
-		// 		],
-		// 		mode: 'payment',
-		// 		success_url: `${YOUR_DOMAIN}/purchase-success`,
-		// 		cancel_url: `${YOUR_DOMAIN}/purchase-cancel`,
-		// 	});
-
-		// 	res.status(200).json({ id: session.id })
-		// } catch (e) {
-		// 	// eslint-disable-next-line no-console
-		// 	console.log(e);
-
-		// 	return res.status(500).json({
-		// 		error: {
-		// 			code: 'server_error',
-		// 			message: 'Internal server error'
-		// 		}
-		// 	});
-		// }
+			return res.status(500).send("user unexpectedly not found")
+		} catch (err) {
+			console.error("error in post onn /payments/init", err)
+			return res.status(500).json({ error: err.message })
+		}
 	}
 	else {
 		res.status(304).send({})

@@ -16,7 +16,7 @@ export default async function ticketImages(req: NextApiRequest, res: NextApiResp
 		if (macroArea === "models") {
 			const modelName = pieces?.[1] as any;
 			try {
-				const data = await dbManager.getModel<MyEvent>(modelName);
+				const data = await dbManager.getRepository<MyEvent>(modelName);
 				const entity = data.create(req.body);
 				const result = await data.save(entity)
 
@@ -37,7 +37,7 @@ export default async function ticketImages(req: NextApiRequest, res: NextApiResp
 		if (macroArea === "models") {
 			const modelName = pieces?.[1] as any;
 			try {
-				const data = await dbManager.getModel(modelName);
+				const data = await dbManager.getRepository(modelName);
 
 				const found = await data.find()
 				console.log("foubd ", found)
@@ -50,7 +50,7 @@ export default async function ticketImages(req: NextApiRequest, res: NextApiResp
 		// console.log("")
 		// res.json({ result: true })
 
-		// const data = await dbManager.getModel("Booking");
+		// const data = await dbManager.getModel("bookings");
 		// console.log("data")
 	}
 	return res.status(400).json({ error: "nothing to do" })

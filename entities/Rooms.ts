@@ -11,7 +11,7 @@ import { User } from "./User";
 
 @Index("event_id", ["eventId"], {})
 @Index("user_id", ["userId"], {})
-@Entity("Rooms", { schema: "test_generation" })
+@Entity("rooms", { schema: "test_generation" })
 export class Rooms {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   public id!: number;
@@ -31,11 +31,11 @@ export class Rooms {
   @Column("int", { name: "completed", nullable: true })
   public completed!: number | null;
 
-  @ManyToOne("Event", "rooms", { onDelete: "NO ACTION", onUpdate: "NO ACTION" })
+  @ManyToOne("events", "rooms", { onDelete: "NO ACTION", onUpdate: "NO ACTION" })
   @JoinColumn([{ name: "event_id", referencedColumnName: "id" }])
   public event!: Event;
 
-  @ManyToOne("TheUser", "rooms", { onDelete: "NO ACTION", onUpdate: "NO ACTION" })
+  @ManyToOne("users", "rooms", { onDelete: "NO ACTION", onUpdate: "NO ACTION" })
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   public user!: User;
 }
