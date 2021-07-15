@@ -79,7 +79,7 @@ export default function PurchaseSuccessPage({ }: Props) {
   // router.query.bookingId!
   return (
     <>
-      <Script id="655c0f51-1a63-1a61-4c2a-2f3dff2d0ca9-live-a0a8ecd6-a08d-d4d5-b8b3-c5f4bceaed30" width="100%" height="100%" src="https://player.dacast.com/js/player.js?contentId=655c0f51-1a63-1a61-4c2a-2f3dff2d0ca9-live-a0a8ecd6-a08d-d4d5-b8b3-c5f4bceaed30" class="dacast-video"></Script>
+      <Script id="655c0f51-1a63-1a61-4c2a-2f3dff2d0ca9-live-a0a8ecd6-a08d-d4d5-b8b3-c5f4bceaed30" src="https://player.dacast.com/js/player.js?contentId=655c0f51-1a63-1a61-4c2a-2f3dff2d0ca9-live-a0a8ecd6-a08d-d4d5-b8b3-c5f4bceaed30" ></Script>
       <Page meta={meta}>
         <Layout>
           {/* <div id="embedWidget"></div> */}

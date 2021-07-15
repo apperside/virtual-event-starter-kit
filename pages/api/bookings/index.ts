@@ -1,3 +1,4 @@
+import { Booking } from './../../../entities/Bookings';
 import { getSession } from 'next-auth/client';
 import { dbManager } from '@lib/database';
 
@@ -11,9 +12,11 @@ import { SITE_ORIGIN } from "@lib/constants";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method === 'GET') {
-		const db_bookings = await dbManager.getRepository("bookings");
+		const db_bookings = await dbManager.getRepository<Booking>("bookings");
 		const session = await getSession({ req });
-		const bookings = await db_bookings.find({ userId: session?.user?.userId })
+		const bookings = await db_bookings.find({
+			where: { userId: session?.user?.userId }
+		})
 		console.log("bookings", bookings.length);
 		res.json(bookings);
 
