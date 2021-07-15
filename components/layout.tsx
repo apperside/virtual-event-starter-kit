@@ -25,6 +25,7 @@ import MobileMenu from './mobile-menu';
 import Footer, { HostedByVercel } from './footer';
 import ViewSource from '@components/view-source';
 import { signIn, useSession } from "next-auth/client";
+//@ts-ignore
 import JSXStyle from 'styled-jsx/style'
 
 type Props = {
