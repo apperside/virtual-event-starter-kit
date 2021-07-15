@@ -24,6 +24,7 @@
     "@reach/skip-nav": "0.12.1",
     "@stripe/stripe-js": "^1.15.1",
     "axios": "^0.21.1",
+    "child_process": "^1.0.2",
     "chrome-aws-lambda": "5.5.0",
     "classnames": "2.2.6",
     "cookie": "0.4.1",
@@ -80,7 +81,7 @@
     "postcss-hover-media-feature": "1.0.0",
     "postcss-preset-env": "6.7.0",
     "prettier": "2.2.1",
-    "typescript": "4.1.3",
+    "typescript": "4.3.2",
     "typescript-plugin-css-modules": "^3.4.0"
   }
 }

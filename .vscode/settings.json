@@ -14,5 +14,6 @@
 		"**/.factorypath": true,
 		"**/node_modules": true
 	},
-	"workspace.isHidden": false
+	"workspace.isHidden": false,
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

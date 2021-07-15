@@ -42,10 +42,14 @@ export default function ScheduleSidebar({ allStages }: Props) {
       <Select
         aria-label="Select a stage"
         value={currentStageSlug}
-        onChange={e => {
+        onChange={async e => {
           const slug = e.target.value;
           setCurrentStageSlug(slug);
-          router.push(`/stage/${slug}`);
+          try {
+            await router.push(`/stage/${slug}`);
+          } catch (err) {
+            console.log("ciao")
+          }
         }}
       >
         {allStages.map(stage => (

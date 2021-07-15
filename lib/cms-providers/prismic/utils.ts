@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /**
  * Copyright 2020 Vercel Inc.
  *

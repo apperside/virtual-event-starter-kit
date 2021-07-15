@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 export const atomic = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
 	const originalMethod = descriptor.value;
 

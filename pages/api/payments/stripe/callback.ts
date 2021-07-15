@@ -3,7 +3,7 @@ import { Booking } from "entities/Bookings";
 import { buffer } from "micro";
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getConnectionManager } from 'typeorm';
-import { getServerSideStripe } from 'lib/stripe';
+import { getServerSideStripe } from 'lib/stripe-ss';
 import * as securePin from "secure-pin";
 export const config = {
 	api: {

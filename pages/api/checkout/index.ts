@@ -18,7 +18,7 @@ import ms from 'ms';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getAllStages } from '@lib/cms-api';
 import { SITE_ORIGIN } from "@lib/constants";
-import { getServerSideStripe } from "@lib/stripe";
+import { getServerSideStripe } from "@lib/stripe-ss";
 // Number of seconds to cache the API response for
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call

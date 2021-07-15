@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /**
  * Copyright 2020 Vercel Inc.
  *
@@ -28,10 +29,10 @@ function StageRow({ stage }: { stage: Stage }) {
 
   return (
     <div key={stage.name} className={styles.row}>
-      <h3 className={cn(styles['stage-name'], styles[stage.slug])}>
+      <h3 className={cn(styles['stage-name'], (styles as any)[stage.slug])}>
         <span>{stage.name}</span>
       </h3>
-      <div className={cn(styles.talks, styles[stage.slug])}>
+      <div className={cn(styles.talks, (styles as any)[stage.slug])}>
         {Object.keys(timeBlocks).map((startTime: string) => (
           <div key={startTime}>
             {timeBlocks[startTime].map((talk: Talk, index: number) => (

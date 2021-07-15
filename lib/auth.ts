@@ -4,7 +4,7 @@ import { getSession } from "next-auth/client";
 import { JWT } from "next-auth/jwt";
 import { dbManager } from './database';
 import { Error401 } from "./errors";
-import { getServerSideStripe } from "./stripe";
+import { getServerSideStripe } from "./stripe-ss";
 
 
 // eslint-disable-next-line @typescript-eslint/require-await

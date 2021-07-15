@@ -1,5 +1,5 @@
 import { authHelper } from './../../../lib/auth';
-import { getServerSideStripe } from './../../../lib/stripe';
+import { getServerSideStripe } from './../../../lib/stripe-ss';
 import { getSession } from 'next-auth/client';
 /**
  * Copyright 2020 Vercel Inc.
