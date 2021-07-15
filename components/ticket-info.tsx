@@ -21,7 +21,7 @@ import { DATE, SITE_URL } from '@lib/constants';
 import VercelLogo from '@components/icons/icon-platform';
 
 const siteUrl = new URL(SITE_URL);
-const siteUrlForTicket = `${siteUrl.host}${siteUrl.pathname}`.replace(/\/$/, '');
+const siteUrlForTicket = "https://video.seetingapp.com/events/12345";// `${siteUrl.host}${siteUrl.pathname}`.replace(/\/$/, '');
 
 export default function TicketInfo({ logoTextSecondaryColor = 'var(--accents-5)' }) {
   const createdBy = (
@@ -41,9 +41,9 @@ export default function TicketInfo({ logoTextSecondaryColor = 'var(--accents-5)'
         <div>{DATE}</div>
         <div>ONLINE</div>
       </div>
-      <div className={styleUtils['hide-on-mobile']}>{createdBy}</div>
-      <div className={styles.url}>{siteUrlForTicket}</div>
-      <div className={styleUtils['show-on-mobile']}>{createdBy}</div>
+      {/* <div className={styleUtils['hide-on-mobile']}>{createdBy}</div> */}
+      {/* <div className={styles.url}>{siteUrlForTicket}</div> */}
+      {/* <div className={styleUtils['show-on-mobile']}>{createdBy}</div> */}
     </div>
   );
 }

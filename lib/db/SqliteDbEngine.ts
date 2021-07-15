@@ -36,6 +36,7 @@ export class SqliteDbEngine implements IDbEngine {
 
 	async init() {
 		this.connection = await createConnection();
+		await this.connection.synchronize();
 		this.routes = this.connection.entityMetadatas.map(schema => schema.name);
 		// this.options = options;
 		// this.initRoutes(routes);

@@ -16,7 +16,7 @@
 
 import { useState } from 'react';
 import cn from 'classnames';
-import useConfData from '@lib/hooks/use-conf-data';
+// import useConfData from '@lib/hooks/use-conf-data';
 import { useRouter } from 'next/router';
 import FormError from '@lib/form-error';
 import LoadingDots from './loading-dots';
@@ -37,7 +37,7 @@ export default function Form({ sharePage }: Props) {
   const [errorTryAgain, setErrorTryAgain] = useState(false);
   const [focused, setFocused] = useState(false);
   const [formState, setFormState] = useState<FormState>('default');
-  const { setPageState, setUserData } = useConfData();
+  // const { setPageState, setUserData } = useConfData();
   const router = useRouter();
   useEmailQueryParam('email', setEmail);
 
@@ -88,20 +88,20 @@ export default function Form({ sharePage }: Props) {
                 username: data.username
               };
 
-              if (sharePage) {
-                const queryString = Object.keys(params)
-                  .map(
-                    key =>
-                      `${encodeURIComponent(key)}=${encodeURIComponent(
-                        params[key as keyof typeof params] || ''
-                      )}`
-                  )
-                  .join('&');
-                router.replace(`/?${queryString}`, '/');
-              } else {
-                setUserData(params);
-                setPageState('ticket');
-              }
+              // if (sharePage) {
+              //   const queryString = Object.keys(params)
+              //     .map(
+              //       key =>
+              //         `${encodeURIComponent(key)}=${encodeURIComponent(
+              //           params[key as keyof typeof params] || ''
+              //         )}`
+              //     )
+              //     .join('&');
+              //   router.replace(`/?${queryString}`, '/');
+              // } else {
+              //   setUserData(params);
+              //   setPageState('ticket');
+              // }
             })
             .catch(async err => {
               let message = 'Error! Please try again.';

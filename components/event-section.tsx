@@ -28,6 +28,7 @@ import { Stripe, loadStripe } from '@stripe/stripe-js'
 import { signIn, useSession } from "next-auth/client";
 import { getClientSideStripe } from "@lib/stripe";
 import { Vouchers } from "entities/Vouchers";
+import { useRouter } from "next/router";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // import { loadStripe } from '@stripe/stripe-js';
@@ -59,7 +60,7 @@ export default function SponsorSection({ event }: Props) {
   const stripeCard = useRef<StripeCardElement>()
   const [session, loading] = useSession()
   const [isFormComplete, setIsFormComplete] = useState(false)
-
+  const router = useRouter()
   // console
   const pay = async () => {
 
@@ -96,7 +97,9 @@ export default function SponsorSection({ event }: Props) {
             },
             setup_future_usage: 'off_session'
           });
-          alert("ok")
+          await router.push("/purchase-success?bookingId=12345")
+
+          // alert("ok")
         } catch (err) {
           alert("error")
         }

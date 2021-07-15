@@ -15,14 +15,14 @@ import { UserSchema } from "next-auth-models/User";
 const entities = [
 	User,//new EntitySchema(UserSchema),
 	Booking,
-	// Artist,
-	// Event,
-	// Genre,
-	// Images,
-	// Rooms,
-	// EventArtists,
-	// Transactions,
-	// Vouchers
+	Artist,
+	Event,
+	Genre,
+	Images,
+	Rooms,
+	EventArtists,
+	Transactions,
+	Vouchers
 ]
 
 export default entities

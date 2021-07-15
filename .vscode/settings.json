@@ -1,5 +1,18 @@
 {
 	"workbench.colorCustomizations": {
 		"editorIndentGuide.activeBackground": "#20e20e9e"
-	}
+	},
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/.classpath": true,
+		"**/.project": true,
+		"**/.settings": true,
+		"**/.factorypath": true,
+		"**/node_modules": true
+	},
+	"workspace.isHidden": false
 }

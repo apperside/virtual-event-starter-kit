@@ -72,7 +72,8 @@ export default function Ticket({ username, name, ticketNumber, sharePage }: Prop
           <h2 className={cn(styles.hero, styleUtils.appear, styleUtils['appear-first'])}>
             {sharePage ? (
               name ? (
-                <>{name}’s Ticket</>
+                // <>{name}’s Ticket</>
+                <>You're in!</>
               ) : (
                 <>{SITE_NAME}</>
               )
@@ -85,7 +86,7 @@ export default function Ticket({ username, name, ticketNumber, sharePage }: Prop
           <p className={cn(styles.description, styleUtils.appear, styleUtils['appear-second'])}>
             {sharePage ? (
               <>
-                Join {name ?? 'them'} on {DATE}.
+                Join {"artist name"} on {DATE}.
               </>
             ) : (
               <>
@@ -95,7 +96,7 @@ export default function Ticket({ username, name, ticketNumber, sharePage }: Prop
             )}
           </p>
         </div>
-        <div className={cn(styleUtils.appear, styleUtils['appear-third'])}>
+        {/* <div className={cn(styleUtils.appear, styleUtils['appear-third'])}>
           {!sharePage ? (
             <TicketForm
               defaultUsername={username}
@@ -104,7 +105,7 @@ export default function Ticket({ username, name, ticketNumber, sharePage }: Prop
           ) : (
             <Form sharePage />
           )}
-        </div>
+        </div> */}
       </div>
       <div className={styles['ticket-visual-wrapper']}>
         <div
@@ -118,7 +119,7 @@ export default function Ticket({ username, name, ticketNumber, sharePage }: Prop
             ticketGenerationState={ticketGenerationState}
           />
         </div>
-        {!sharePage && (
+        {/* {!sharePage && (
           <>
             {username ? (
               <div>
@@ -133,7 +134,7 @@ export default function Ticket({ username, name, ticketNumber, sharePage }: Prop
               <div className={styles['ticket-actions-placeholder']} />
             )}
           </>
-        )}
+        )} */}
       </div>
     </div>
   );

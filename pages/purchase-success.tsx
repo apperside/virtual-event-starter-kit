@@ -23,22 +23,48 @@ import Layout from '@components/layout';
 import { getAllSpeakers } from '@lib/cms-api';
 import { Speaker } from '@lib/types';
 import { META_DESCRIPTION } from '@lib/constants';
+import React from "react";
+import Ticket from "@components/ticket";
+import { useSession } from "next-auth/client";
+import { useRouter } from "next/router";
 
 type Props = {
   // speaker: Speaker;
+  // bookingId: string
 };
 
-export default function SpeakerPage({ }: Props) {
+export default function PurchaseSuccessPage({ }: Props) {
   const meta = {
     title: 'Demo - Virtual Event Starter Kit',
     description: META_DESCRIPTION
   };
 
+  const [session] = useSession()
+  const router = useRouter()
+  // router.query.bookingId!
   return (
     <Page meta={meta}>
       <Layout>
-        <h1>EVENTO ACQUISTATO</h1>
+        <Ticket
+          username={session?.user?.name ?? ""}
+          name={session?.user?.name ?? ""}
+          ticketNumber={router.query.bookingId! as any}
+          sharePage={true}
+        />
       </Layout>
     </Page>
   );
 }
+
+
+
+// export const getStaticProps: GetStaticProps<Props> = async (context) => {
+//   const bookingId = context.params?.bookingId as string
+//   // const events = await getAllEvents();
+//   return {
+//     props: {
+//       bookingId: bookingId
+//     },
+//     revalidate: 60
+//   };
+// };
